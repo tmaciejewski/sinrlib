@@ -20,12 +20,12 @@ struct node
     {
     }
 
-    bool operator==(const node & other)
+    bool operator==(const node & other) const
     {
         return x == other.x && y == other.y;
     }
         
-    double operator-(const node & other)
+    double operator-(const node & other) const
     {
         double dx = other.x - x;
         double dy = other.y - y;
@@ -42,35 +42,51 @@ class model
     config conf;
     std::map<uid, node> nodes;
     std::map<uid, std::set<uid> > links;
-    unsigned failed_transmit, success_transmit;
     // TODO
     // reachable = {}
     // power_cache = {}
 
     public:
 
-    model(const config &c) : conf(c), failed_transmit(0), success_transmit(0)
+    model(const config &c) : conf(c)
     {
     }
 
-    double power(uid sender, uid receiver)
+    double power(uid sender, uid receiver) const
     {
         // TODO
         //try:
         //    return self.power_cache[(sender, receiver)]
         //except KeyError:
-        double dist = nodes[sender] - nodes[receiver];
+        double dist = nodes.find(sender)->second
+            - nodes.find(receiver)->second;
         double p = conf.power / std::pow(dist, conf.alpha);
         // self.power_cache[(sender, receiver)] = p
         return p;
     }
 
-    void eval(const std::set<uid> & senders, std::map<uid, std::set<uid> > result);
+    void eval(const std::set<uid> & senders,
+            std::map<uid, std::set<uid> > result) const;
     // TODO: connected components
 
-    unsigned diameter();
+    unsigned diameter() const;
 
-    unsigned diameter_bfs(uid start_uid);
+    unsigned diameter_bfs(uid start_uid) const;
+
+    virtual uid source() const
+    {
+        return nodes.begin()->first;
+    }
+
+    const std::map<uid, node> & get_nodes() const
+    {
+        return nodes;
+    }
+
+    const std::map<uid, std::set<uid> > & get_links() const
+    {
+        return links;
+    }
 
 // TODO
 //    def show(self, active = set(), title = 'Network'):
