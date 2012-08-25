@@ -5,6 +5,26 @@
 
 namespace sinr {
 
+
+void model::add_node(uid u, double x, double y, double range_mod)
+{
+    if (nodes.find(u) == nodes.end())
+    {
+        node n = node(x, y);
+        for (std::map<uid, node>::iterator other = nodes.begin();
+                other != nodes.end(); other++)
+        {
+            if (n - other->second < range_mod)
+            {
+                links[u].insert(other->first);
+                links[other->first].insert(u);
+            }
+        }
+        nodes[u] = n;
+    }
+}
+
+
 void model::eval(const std::set<uid> & senders,
         std::map<uid, std::set<uid> > result) const
 {

@@ -42,6 +42,8 @@ class model
     config conf;
     std::map<uid, node> nodes;
     std::map<uid, std::set<uid> > links;
+    uid source;
+
     // TODO
     // reachable = {}
     // power_cache = {}
@@ -73,9 +75,9 @@ class model
 
     unsigned diameter_bfs(uid start_uid) const;
 
-    virtual uid source() const
+    uid get_source() const
     {
-        return nodes.begin()->first;
+        return source;
     }
 
     const std::map<uid, node> & get_nodes() const
@@ -125,6 +127,10 @@ class model
 //        self.nodes = pickle.load(f)
 //        self.links = pickle.load(f)
 //
+
+    protected:
+
+    void add_node(uid u, double x, double y, double range_mod);
 };
 
 } // namespace sinr
