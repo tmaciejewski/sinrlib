@@ -175,4 +175,52 @@ unsigned model::diameter_bfs(uid start_uid) const
     return std::max_element(dist.begin(), dist.end(), map_val_comp<std::map<uid, unsigned>::value_type >())->second;
 }    
 
+void model::export_to_pdf(int s, const char *filename) const
+{
+    int scale = 50;
+
+    cairo_surface_t *surface;
+    cairo_t *cr;
+    surface = cairo_pdf_surface_create(filename, s * scale, s * scale);
+    cr = cairo_create(surface);
+
+    cairo_set_source_rgb(cr, 1, 0, 0);
+    cairo_set_line_width(cr, 0.1);
+
+    plot(cr, s, scale);
+
+    cairo_show_page(cr);
+    cairo_destroy(cr);
+    cairo_surface_destroy(surface);
+}
+
+void model::plot(cairo_t *cr, int s, int scale) const
+{
+    for (std::map<uid, node>::const_iterator it = nodes.begin();
+            it != nodes.end(); it++)
+    {
+        std::map<uid, std::set<uid> >::const_iterator links_it = links.find(it->first);
+        if (links_it != links.end())
+        {
+            const std::set<uid> &links = links_it->second;
+
+            cairo_arc(cr, scale * it->second.x, scale * (s - it->second.y), 1, 0, 2*M_PI);
+            cairo_fill(cr);
+
+            for (std::set<uid>::const_iterator it2 = links.begin();
+                    it2 != links.end(); it2++)
+            {
+                if (it->first < *it2)
+                {
+                    const node &n = (nodes.find(*it2))->second;
+                    cairo_move_to(cr, scale * it->second.x, scale * (s - it->second.y));
+                    cairo_line_to(cr, scale * n.x, scale * (s - n.y));
+                    cairo_stroke(cr);
+                }
+            }
+        }
+    }
+
+}
+
 } // namespace sinr
