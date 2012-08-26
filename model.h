@@ -6,6 +6,8 @@
 #include <cmath>
 #include <map>
 #include <set>
+#include <cairo.h>
+#include <cairo-pdf.h>
 
 namespace sinr {
 
@@ -31,10 +33,6 @@ struct node
         double dy = other.y - y;
         return std::sqrt(dx*dx + dy*dy);
     }
-
-    //TODO
-    //def __str__(self):
-    //    return 'Node(%s, %s)' % (self.x, self.y)
 };    
 
 class model
@@ -42,6 +40,7 @@ class model
     config conf;
     std::map<uid, node> nodes;
     std::map<uid, std::set<uid> > links;
+    std::map<uid, uid> components;
     uid source;
 
     // TODO
@@ -69,7 +68,6 @@ class model
 
     void eval(const std::set<uid> & senders,
             std::map<uid, std::set<uid> > result) const;
-    // TODO: connected components
 
     unsigned diameter() const;
 
@@ -90,32 +88,9 @@ class model
         return links;
     }
 
+    void export_to_pdf(int s, const char *filename) const;
+
 // TODO
-//    def show(self, active = set(), title = 'Network'):
-//        self.plot(active, title)
-//        matplotlib.pyplot.show()
-//
-//    def plot(self, active, title):
-//        matplotlib.pyplot.cla()
-//        for s in self.links:
-//            for r in self.links[s]:
-//                if s < r:
-//                    xs = [self.nodes[s].x, self.nodes[r].x]
-//                    ys = [self.nodes[s].y, self.nodes[r].y]
-//                    matplotlib.pyplot.plot(xs, ys, 'b')
-//
-//        xs1 = [self.nodes[uid].x for uid in self.nodes if uid not in active]
-//        ys1 = [self.nodes[uid].y for uid in self.nodes if uid not in active]
-//        xs2 = [self.nodes[uid].x for uid in active]
-//        ys2 = [self.nodes[uid].y for uid in active]
-//        matplotlib.pyplot.title(title)
-//        matplotlib.pyplot.plot(xs1, ys1, 'or', markersize = 8)
-//        matplotlib.pyplot.plot(xs2, ys2, 'oy', markersize = 8)
-//
-//    def export(self, filename, active, title):
-//        self.plot(active, title)
-//        matplotlib.pyplot.savefig(filename)
-//
 //    def save(self, filename):
 //        f = open(filename, 'wb')
 //        pickle.dump(self.nodes, f)
@@ -131,6 +106,10 @@ class model
     protected:
 
     void add_node(uid u, double x, double y, double range_mod);
+    void component_union(uid u1, uid u2);
+    uid  component_find(uid u);
+    bool is_connected();
+    void plot(cairo_t *cr, int s, int scale) const;
 };
 
 } // namespace sinr

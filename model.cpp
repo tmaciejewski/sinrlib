@@ -2,15 +2,18 @@
 
 #include <queue>
 #include <algorithm>
+#include <iostream>
 
 namespace sinr {
-
 
 void model::add_node(uid u, double x, double y, double range_mod)
 {
     if (nodes.find(u) == nodes.end())
     {
         node n = node(x, y);
+        links[u]; // create empty links set
+        components[u] = u; // in its own component
+        
         for (std::map<uid, node>::iterator other = nodes.begin();
                 other != nodes.end(); other++)
         {
@@ -18,12 +21,57 @@ void model::add_node(uid u, double x, double y, double range_mod)
             {
                 links[u].insert(other->first);
                 links[other->first].insert(u);
+                component_union(u, other->first);
             }
         }
+
         nodes[u] = n;
     }
 }
 
+uid model::component_find(uid u)
+{
+    uid root = u, tmp;
+    std::vector<uid> path;
+    while ( (tmp = components[root]) != root )
+    {
+        path.push_back(root);
+        root = tmp;
+    }
+
+    // path shortening
+    for (std::vector<uid>::iterator it = path.begin();
+            it != path.end(); it++)
+    {
+        components[*it] = root;
+    }
+
+    return root;
+}
+
+void model::component_union(uid u1, uid u2)
+{
+    uid root1, root2;
+
+    root1 = component_find(u1);
+    root2 = component_find(u2);
+
+    if (root1 != root2)
+        components[root1] = root2;
+}
+
+bool model::is_connected()
+{
+    std::set<uid> roots;
+    for (std::map<uid, node>::iterator it = nodes.begin();
+            it != nodes.end(); it++)
+    {
+        uid root = component_find(it->first);
+        roots.insert(root);
+    }
+
+    return roots.size() == 1;
+}
 
 void model::eval(const std::set<uid> & senders,
         std::map<uid, std::set<uid> > result) const
