@@ -9,7 +9,7 @@ class algorithm
 {
     public:
 
-    virtual void init(const model &m);
+    virtual void init(const model *m) = 0;
     virtual bool on_round_end(uid u, const std::set<uid> & messages, unsigned round_number) = 0;
     virtual bool is_done() = 0;
 };
