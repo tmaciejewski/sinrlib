@@ -18,7 +18,8 @@ struct node
     double x, y;
     double noise;
 
-    node(double x_ = 0.0, double y_ = 0.0) : x(x_), y(y_)
+    node(double x_ = 0.0, double y_ = 0.0, double noise_ = 1)
+        : x(x_), y(y_), noise(noise_)
     {
     }
 
@@ -53,26 +54,6 @@ class model
     {
     }
 
-    double power(uid sender, uid receiver) const
-    {
-        // TODO
-        //try:
-        //    return self.power_cache[(sender, receiver)]
-        //except KeyError:
-        double dist = nodes.find(sender)->second
-            - nodes.find(receiver)->second;
-        double p = conf.power / std::pow(dist, conf.alpha);
-        // self.power_cache[(sender, receiver)] = p
-        return p;
-    }
-
-    void eval(const std::set<uid> & senders,
-            std::map<uid, std::set<uid> > result) const;
-
-    unsigned diameter() const;
-
-    unsigned diameter_bfs(uid start_uid) const;
-
     uid get_source() const
     {
         return source;
@@ -88,10 +69,13 @@ class model
         return links;
     }
 
+    double power(uid sender, uid receiver) const;
+    void eval(const std::set<uid> &senders,
+            std::map<uid, std::set<uid> > &result) const;
+    unsigned diameter() const;
+    unsigned diameter_bfs(uid start_uid) const;
     void export_to_pdf(int s, const char *filename) const;
-
     void save(const char *filename) const;
-
     void load(const char *filename);
 
     protected:

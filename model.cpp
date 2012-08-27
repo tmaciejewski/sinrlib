@@ -74,8 +74,21 @@ bool model::is_connected()
     return roots.size() == 1;
 }
 
-void model::eval(const std::set<uid> & senders,
-        std::map<uid, std::set<uid> > result) const
+double model::power(uid sender, uid receiver) const
+{
+    // TODO
+    //try:
+    //    return self.power_cache[(sender, receiver)]
+    //except KeyError:
+    double dist = nodes.find(sender)->second
+        - nodes.find(receiver)->second;
+    double p = conf.power / std::pow(dist, conf.alpha);
+    // self.power_cache[(sender, receiver)] = p
+    return p;
+}
+
+void model::eval(const std::set<uid> &senders,
+        std::map<uid, std::set<uid> > &result) const
 {
     result.clear();
 
