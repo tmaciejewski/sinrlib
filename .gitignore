@@ -1,3 +1,7 @@
 *.o
+*.py
+*.txt
 *.pdf
 *.swp
+sinr
+show_model
