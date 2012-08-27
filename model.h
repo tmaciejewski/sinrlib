@@ -90,18 +90,9 @@ class model
 
     void export_to_pdf(int s, const char *filename) const;
 
-// TODO
-//    def save(self, filename):
-//        f = open(filename, 'wb')
-//        pickle.dump(self.nodes, f)
-//        pickle.dump(self.links, f)
-//        f.close()
-//
-//    def load(self, filename):
-//        f = open(filename, 'rb')
-//        self.nodes = pickle.load(f)
-//        self.links = pickle.load(f)
-//
+    void save(const char *filename) const;
+
+    void load(const char *filename);
 
     protected:
 

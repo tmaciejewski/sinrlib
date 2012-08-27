@@ -4,7 +4,7 @@
 
 #include "sinrlib.h"
 
-int N = 2000, s = 20;
+int N = 20, s = 1;
 double e = .2;
 
 void show(const sinr::model &model, const char *filename)
@@ -13,6 +13,7 @@ void show(const sinr::model &model, const char *filename)
     std::cout << "diameter: " << model.diameter() << std::endl;
     model.export_to_pdf(s, filename);
     std::cout << "exported" << std::endl;
+    //model.save("model.dat");
 }
 
 int main(int argc, char **argv)
@@ -31,6 +32,8 @@ int main(int argc, char **argv)
     if (model_name == "uniform")
     {
         sinr::uniform_model model(conf, N, s, 1 - e);
+        //sinr::model model(conf);
+        //model.load("model.dat");
         show(model, argv[2]);
     }
     //elif sys.argv[1] == 'social':

@@ -3,6 +3,7 @@
 #include <queue>
 #include <algorithm>
 #include <iostream>
+#include <fstream>
 
 namespace sinr {
 
@@ -220,7 +221,27 @@ void model::plot(cairo_t *cr, int s, int scale) const
             }
         }
     }
-
 }
+
+void model::save(const char *filename) const
+{
+    std::ofstream file(filename);
+    file.write(reinterpret_cast<const char *>(&conf), sizeof(conf));
+    file.write(reinterpret_cast<const char *>(&nodes), sizeof(nodes));
+    file.write(reinterpret_cast<const char *>(&links), sizeof(links));
+    file.write(reinterpret_cast<const char *>(&components), sizeof(components));
+    file.write(reinterpret_cast<const char *>(&source), sizeof(source));
+}
+
+void model::load(const char *filename)
+{
+    std::ifstream file(filename);
+    file.read(reinterpret_cast<char *>(&conf), sizeof(conf));
+    file.read(reinterpret_cast<char *>(&nodes), sizeof(nodes));
+    file.read(reinterpret_cast<char *>(&links), sizeof(links));
+    file.read(reinterpret_cast<char *>(&components), sizeof(components));
+    file.read(reinterpret_cast<char *>(&source), sizeof(source));
+}
+
 
 } // namespace sinr
