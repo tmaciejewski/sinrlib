@@ -1,14 +1,41 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <algorithm>
 
 #include "sinrlib.h"
 #include "naive.h"
 
+double avg(const std::vector<int> results)
+{
+    double avg = 0;
+
+    for (std::vector<int>::const_iterator it = results.begin();
+            it != results.end(); it++)
+    {
+        avg += *it;
+    }
+
+    return avg / results.size();
+}
+
+double stdv(const std::vector<int> results)
+{
+    double stdv = 0;
+    double a = avg(results);
+
+    for (std::vector<int>::const_iterator it = results.begin();
+            it != results.end(); it++)
+    {
+        stdv += (a - *it) * (a - *it);
+    }
+
+    return std::sqrt(stdv / results.size());
+}
+
 int main(int argc, char **argv)
 {
-    sinr::config conf;
-    int tries, N_start =2000, N_end = 2000, N_step = 1, S_start = 10, S_end = 10, S_step = 3;
+    int tries, N_start = 2000, N_end = 2000, N_step = 1, S_start = 10, S_end = 10, S_step = 3;
     int C = 1, d = 5;
     double e = .2;
     //std::vector<sinr::algorithm> alg;
@@ -19,20 +46,33 @@ int main(int argc, char **argv)
         return 1;
     }
 
+
     for (int N = N_start; N <= N_end; N += N_step)
     {
         for (int S = S_start; S <= S_end; S += S_step)
         {
+            std::vector<int> results;
+            results.reserve(tries);
+
             std::istringstream(argv[1]) >> tries;
             for (; tries > 0; tries--)
             {
-                sinr::uniform_model model(conf, N_start, S_start, 1 - e);
+                sinr::uniform_model model(2.5, 1, 1 - e);
+                model.generate(N, S);
                 sinr::simulation sim(model);
                 naive_algorithm alg;
                 int result;
                 result = sim.run(alg);
-                std::cout << N << ' ' << S << ' ' << result << std::endl;
+                if (result < 0)
+                    std::cout << "F" << std::flush;
+                else
+                {
+                    std::cout << "." << std::flush;
+                    results.push_back(result);
+                }
             }
+            std::cout << '\n' << N << ' ' << S << ' '
+                << avg(results) << ' ' << stdv(results) << std::endl;
         }
     }
 
