@@ -1,6 +1,7 @@
-#include "simulation.h"
-
+#include <vector>
 #include <iostream>
+
+#include "simulation.h"
 
 namespace sinr {
 
@@ -8,7 +9,7 @@ int simulation::run(algorithm &alg, unsigned max_rounds)
 {
     unsigned round_number = 0;
     unsigned warn_step = max_rounds / 10;
-    std::set<uid> senders;
+    std::vector<uid> senders;
 
     success = 0;
     failed = 0;
@@ -21,8 +22,8 @@ int simulation::run(algorithm &alg, unsigned max_rounds)
         std::set<uid> receivers;
         std::map<uid, std::set<uid> > messages;
 
-        //if (round_number % warn_step == 0 && round_number > 0)
-        //    std::cout << "round:" << round_number << std::endl;
+        if (round_number % warn_step == 0 && round_number > 0)
+            std::cout << "round:" << round_number << std::endl;
 
         if (round_number > max_rounds)
             return -1;
@@ -40,7 +41,7 @@ int simulation::run(algorithm &alg, unsigned max_rounds)
         {
             if (alg.on_round_end(u->first, messages[u->first], round_number))
             {
-                senders.insert(u->first);
+                senders.push_back(u->first);
             }
         }
 

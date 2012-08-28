@@ -1,11 +1,10 @@
 #ifndef SINR_MODEL_H
 #define SINR_MODEL_H
 
-#include "config.h"
-
 #include <cmath>
 #include <map>
 #include <set>
+#include <vector>
 #include <cairo.h>
 #include <cairo-pdf.h>
 
@@ -41,11 +40,11 @@ class model
     double alpha, beta, range;
     std::map<uid, node> nodes;
     std::map<uid, std::set<uid> > links;
+    std::map<uid, std::set<uid> > reachable;
     std::map<uid, uid> components;
     uid source;
 
     // TODO
-    // reachable = {}
     // power_cache = {}
 
     public:
@@ -71,7 +70,7 @@ class model
     }
 
     double power(uid sender, uid receiver) const;
-    void eval(const std::set<uid> &senders,
+    void eval(const std::vector<uid> &senders,
             std::map<uid, std::set<uid> > &result) const;
     unsigned diameter() const;
     unsigned diameter_bfs(uid start_uid) const;

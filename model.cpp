@@ -17,11 +17,19 @@ void model::add_node(uid u, const node &n)
         for (std::map<uid, node>::iterator other = nodes.begin();
                 other != nodes.end(); other++)
         {
-            if (n - other->second < range)
+            double dist = n - other->second;
+            if (dist < range)
             {
                 links[u].insert(other->first);
                 links[other->first].insert(u);
                 component_union(u, other->first);
+            }
+            
+            // TODO: change to real range
+            if (dist < 1)
+            {
+               reachable[other->first].insert(u);
+               reachable[u].insert(other->first);
             }
         }
 
@@ -75,51 +83,46 @@ bool model::is_connected()
 
 double model::power(uid sender, uid receiver) const
 {
-    // TODO
-    //try:
-    //    return self.power_cache[(sender, receiver)]
-    //except KeyError:
     double dist = nodes.find(sender)->second
         - nodes.find(receiver)->second;
-    double p = 1.0 / std::pow(dist, alpha);
-    // self.power_cache[(sender, receiver)] = p
-    return p;
+    return 1.0 / std::pow(dist, alpha);
 }
 
-void model::eval(const std::set<uid> &senders,
+void model::eval(const std::vector<uid> &senders,
         std::map<uid, std::set<uid> > &result) const
 {
     result.clear();
 
-    for (std::set<uid>::iterator sender = senders.begin();
+    for (std::vector<uid>::const_iterator sender = senders.begin();
             sender != senders.end(); sender++)
     {
-        for (std::map<uid, node>::const_iterator receiver = nodes.begin();
-                receiver != nodes.end(); receiver++)
+        const std::set<uid> reachables = reachable.find(*sender)->second;
+        for (std::set<uid>::const_iterator receiver = reachables.begin();
+                receiver != reachables.end(); receiver++)
         {
             bool success = false;
 
             // node can't send and receive simultanously
             // and can't send to itself
 
-            if (senders.find(receiver->first) == senders.end())
+            if (std::find(senders.begin(), senders.end(), *receiver) == senders.end())
             {
                 double interference = 0.0;
 
-                for (std::set<uid>::const_iterator node = senders.begin();
+                for (std::vector<uid>::const_iterator node = senders.begin();
                         node != senders.end(); node++)
                 {
                     if (*node != *sender)
                     {
-                        interference += power(*node, receiver->first);
+                        interference += power(*node, *receiver);
                     }
                 }
 
-                interference += receiver->second.noise;
+                interference += nodes.find(*receiver)->second.noise;
 
                 if (interference != 0)
                 {
-                    double sinr = power(*sender, receiver->first) / interference;
+                    double sinr = power(*sender, *receiver) / interference;
                     if (sinr > beta)
                         success = true;
                 }
@@ -129,7 +132,7 @@ void model::eval(const std::set<uid> &senders,
 
             if (success)
             {
-                result[receiver->first].insert(*sender);
+                result[*receiver].insert(*sender);
             }
         }
     }
@@ -291,9 +294,6 @@ void model::extract_nodes(const std::set<uid> &new_uids)
     {
        add_node(*it, old_nodes[*it]);
     } 
-
-    std::cout << "was " << old_nodes.size() << " nodes, now is "
-        << nodes.size() << std::endl;
 }
 
 } // namespace sinr
