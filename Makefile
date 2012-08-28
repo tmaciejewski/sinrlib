@@ -1,4 +1,4 @@
-FLAGS=-O2 -Wall -g
+FLAGS=-O2 -Wall -g #-pg
 INCLUDES=-I/usr/include/cairo
 LIBS=-lcairo
 

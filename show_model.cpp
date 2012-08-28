@@ -4,7 +4,7 @@
 
 #include "sinrlib.h"
 
-int N = 2000, s = 10;
+int N = 200, s = 10;
 double e = .2;
 
 void show(const sinr::model &model, const char *filename)
@@ -18,7 +18,6 @@ void show(const sinr::model &model, const char *filename)
 
 int main(int argc, char **argv)
 {
-    sinr::config conf;
     std::string model_name;
         
     if (argc < 3)
