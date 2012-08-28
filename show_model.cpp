@@ -4,7 +4,7 @@
 
 #include "sinrlib.h"
 
-int N = 20, s = 1;
+int N = 2000, s = 10;
 double e = .2;
 
 void show(const sinr::model &model, const char *filename)
@@ -31,7 +31,8 @@ int main(int argc, char **argv)
 
     if (model_name == "uniform")
     {
-        sinr::uniform_model model(conf, N, s, 1 - e);
+        sinr::uniform_model model(2.5, 1, 1 - e);
+        model.generate(N, s);
         //sinr::model model(conf);
         //model.load("model.dat");
         show(model, argv[2]);

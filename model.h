@@ -38,7 +38,7 @@ struct node
 
 class model
 {
-    config conf;
+    double alpha, beta, range;
     std::map<uid, node> nodes;
     std::map<uid, std::set<uid> > links;
     std::map<uid, uid> components;
@@ -50,7 +50,8 @@ class model
 
     public:
 
-    model(const config &c) : conf(c)
+    model(double a, double b, double r)
+        : alpha(a), beta(b), range(r)
     {
     }
 
@@ -80,11 +81,14 @@ class model
 
     protected:
 
-    void add_node(uid u, double x, double y, double range_mod);
+    void add_node(uid u, const node &n);
     void component_union(uid u1, uid u2);
     uid  component_find(uid u);
     bool is_connected();
     void plot(cairo_t *cr, int s, int scale) const;
+    void set_source(uid u) { source = u; }
+    bool choose_component(unsigned desired_size);
+    void extract_nodes(const std::set<uid> &new_uids);
 };
 
 } // namespace sinr

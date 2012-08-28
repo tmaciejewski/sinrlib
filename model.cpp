@@ -7,18 +7,17 @@
 
 namespace sinr {
 
-void model::add_node(uid u, double x, double y, double range_mod)
+void model::add_node(uid u, const node &n)
 {
     if (nodes.find(u) == nodes.end())
     {
-        node n = node(x, y);
         links[u]; // create empty links set
         components[u] = u; // in its own component
         
         for (std::map<uid, node>::iterator other = nodes.begin();
                 other != nodes.end(); other++)
         {
-            if (n - other->second < range_mod)
+            if (n - other->second < range)
             {
                 links[u].insert(other->first);
                 links[other->first].insert(u);
@@ -82,7 +81,7 @@ double model::power(uid sender, uid receiver) const
     //except KeyError:
     double dist = nodes.find(sender)->second
         - nodes.find(receiver)->second;
-    double p = conf.power / std::pow(dist, conf.alpha);
+    double p = 1.0 / std::pow(dist, alpha);
     // self.power_cache[(sender, receiver)] = p
     return p;
 }
@@ -121,7 +120,7 @@ void model::eval(const std::set<uid> &senders,
                 if (interference != 0)
                 {
                     double sinr = power(*sender, receiver->first) / interference;
-                    if (sinr > conf.beta)
+                    if (sinr > beta)
                         success = true;
                 }
                 else
@@ -239,7 +238,6 @@ void model::plot(cairo_t *cr, int s, int scale) const
 void model::save(const char *filename) const
 {
     std::ofstream file(filename);
-    file.write(reinterpret_cast<const char *>(&conf), sizeof(conf));
     file.write(reinterpret_cast<const char *>(&nodes), sizeof(nodes));
     file.write(reinterpret_cast<const char *>(&links), sizeof(links));
     file.write(reinterpret_cast<const char *>(&components), sizeof(components));
@@ -249,12 +247,53 @@ void model::save(const char *filename) const
 void model::load(const char *filename)
 {
     std::ifstream file(filename);
-    file.read(reinterpret_cast<char *>(&conf), sizeof(conf));
     file.read(reinterpret_cast<char *>(&nodes), sizeof(nodes));
     file.read(reinterpret_cast<char *>(&links), sizeof(links));
     file.read(reinterpret_cast<char *>(&components), sizeof(components));
     file.read(reinterpret_cast<char *>(&source), sizeof(source));
 }
 
+bool model::choose_component(unsigned desired_size)
+{
+    std::map<uid, std::set<uid> > all_components;
+
+    if (nodes.size() < desired_size)
+        return false;
+
+    for (std::map<uid, node>::iterator it = nodes.begin();
+           it != nodes.end(); it++)
+    {
+        all_components[component_find(it->first)].insert(it->first);
+    }
+
+    for (std::map<uid, std::set<uid> >::iterator it = all_components.begin();
+            it != all_components.end(); it++)
+    {
+        if (it->second.size() >= desired_size)
+        {
+           extract_nodes(it->second);
+           return true;
+        }
+    }
+
+    return false;
+}
+
+void model::extract_nodes(const std::set<uid> &new_uids)
+{
+    std::map<uid, node> old_nodes;
+    nodes.swap(old_nodes);
+    links.clear();
+    components.clear();
+
+    for (std::set<uid>::const_iterator it = new_uids.begin();
+           it != new_uids.end(); it++)
+    {
+       add_node(*it, old_nodes[*it]);
+    } 
+
+    std::cout << "was " << old_nodes.size() << " nodes, now is "
+        << nodes.size() << std::endl;
+}
 
 } // namespace sinr
