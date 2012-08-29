@@ -5,6 +5,7 @@
 
 #include "sinrlib.h"
 #include "naive.h"
+#include "backoff.h"
 
 double avg(const std::vector<int> results)
 {
@@ -35,7 +36,7 @@ double stdv(const std::vector<int> results)
 
 int main(int argc, char **argv)
 {
-    int tries, N_start = 2000, N_end = 2000, N_step = 1, S_start = 10, S_end = 10, S_step = 3;
+    int tries, N_start = 1000, N_end = 1000, N_step = 1, S_start = 6, S_end = 6, S_step = 3;
     int C = 1, d = 5;
     double e = .2;
     //std::vector<sinr::algorithm> alg;
@@ -60,7 +61,7 @@ int main(int argc, char **argv)
                 sinr::uniform_model model(2.5, 1, 1 - e);
                 model.generate(N, S);
                 sinr::simulation sim(model);
-                naive_algorithm alg;
+                backoff_algorithm alg;
                 int result;
                 result = sim.run(alg);
                 if (result < 0)
