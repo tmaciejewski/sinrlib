@@ -6,6 +6,7 @@
 #include "sinrlib.h"
 #include "naive.h"
 #include "backoff.h"
+#include "backoffack.h"
 
 double avg(const std::vector<int> results)
 {
@@ -61,7 +62,7 @@ int main(int argc, char **argv)
                 sinr::uniform_model model(2.5, 1, 1 - e);
                 model.generate(N, S);
                 sinr::simulation sim(model);
-                backoff_algorithm alg;
+                backoffack_algorithm alg;
                 int result;
                 result = sim.run(alg);
                 if (result < 0)

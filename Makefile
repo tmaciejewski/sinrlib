@@ -1,4 +1,4 @@
-FLAGS=-O2 -Wall -g# -pg
+FLAGS=-O2 -Wall -g -pg
 INCLUDES=-I/usr/include/cairo
 LIBS=-lcairo
 
@@ -12,6 +12,6 @@ show_model: show_model.cpp model.cpp uniform.cpp simulation.cpp
 	g++ ${FLAGS} ${INCLUDES} -o show_model show_model.cpp model.cpp uniform.cpp \
 		simulation.cpp ${LIBS}
 
-sinr: sinr.cpp model.cpp uniform.cpp simulation.cpp naive.cpp backoff.cpp
+sinr: sinr.cpp model.cpp uniform.cpp simulation.cpp naive.cpp backoff.cpp backoffack.cpp
 	g++ ${FLAGS} ${INCLUDES} -o sinr sinr.cpp model.cpp uniform.cpp simulation.cpp \
-	   	naive.cpp backoff.cpp ${LIBS}
+	   	naive.cpp backoff.cpp backoffack.cpp ${LIBS}
