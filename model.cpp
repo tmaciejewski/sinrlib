@@ -89,7 +89,7 @@ double model::power(uid sender, uid receiver) const
 }
 
 void model::eval(const std::vector<uid> &senders,
-        std::map<uid, std::set<uid> > &result) const
+        std::map<uid, std::vector<uid> > &result) const
 {
     result.clear();
 
@@ -132,7 +132,7 @@ void model::eval(const std::vector<uid> &senders,
 
             if (success)
             {
-                result[*receiver].insert(*sender);
+                result[*receiver].push_back(*sender);
             }
         }
     }

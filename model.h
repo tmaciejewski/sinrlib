@@ -71,7 +71,7 @@ class model
 
     double power(uid sender, uid receiver) const;
     void eval(const std::vector<uid> &senders,
-            std::map<uid, std::set<uid> > &result) const;
+            std::map<uid, std::vector<uid> > &result) const;
     unsigned diameter() const;
     unsigned diameter_bfs(uid start_uid) const;
     void export_to_pdf(int s, const char *filename) const;

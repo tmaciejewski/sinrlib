@@ -1,7 +1,6 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
-#include <set>
 
 #include "naive.h"
 
@@ -11,7 +10,7 @@ void naive_algorithm::init(const sinr::model *m)
     active.insert(m->get_source());
 }
 
-bool naive_algorithm::on_round_end(sinr::uid u, const std::set<sinr::uid> &messages,
+bool naive_algorithm::on_round_end(sinr::uid u, const std::vector<sinr::uid> &messages,
         unsigned round_number)
 {
     if (messages.size() > 0)

@@ -20,7 +20,7 @@ int simulation::run(algorithm &alg, unsigned max_rounds)
     while (!alg.is_done())
     {
         std::set<uid> receivers;
-        std::map<uid, std::set<uid> > messages;
+        std::map<uid, std::vector<uid> > messages;
 
         if (round_number % warn_step == 0 && round_number > 0)
             std::cout << "round:" << round_number << std::endl;
