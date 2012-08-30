@@ -88,6 +88,7 @@ class model
     void set_source(uid u) { source = u; }
     bool choose_component(unsigned desired_size);
     void extract_nodes(const std::set<uid> &new_uids);
+    void reset();
 };
 
 } // namespace sinr

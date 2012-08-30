@@ -1,7 +1,6 @@
 #include "uniform.h"
 
 #include <cstdlib>
-#include <ctime>
 #include <iostream>
 
 namespace sinr {
@@ -9,8 +8,7 @@ namespace sinr {
 void uniform_model::generate(unsigned n, unsigned size)
 {
     uid current_uid = 0;
-
-    std::srand(std::time(0));
+    reset();
 
     while (!choose_component(n))
     {

@@ -296,4 +296,13 @@ void model::extract_nodes(const std::set<uid> &new_uids)
     } 
 }
 
+void model::reset()
+{
+    nodes.clear();
+    links.clear();
+    components.clear();
+    reachable.clear();
+
+}
+
 } // namespace sinr

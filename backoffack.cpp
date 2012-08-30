@@ -1,6 +1,5 @@
 #include <iostream>
 #include <cstdlib>
-#include <ctime>
 
 #include "backoffack.h"
 
@@ -128,6 +127,6 @@ bool backoffack_algorithm::send_ack(sinr::uid u, const std::vector<sinr::uid> &m
 
 bool backoffack_algorithm::is_done() 
 {
-    std::cout << "active: " << active.size() << std::endl;
+    //std::cout << "active: " << active.size() << std::endl;
     return active.size() == model->get_nodes().size();
 }
