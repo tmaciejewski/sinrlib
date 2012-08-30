@@ -12,6 +12,6 @@ show_model: show_model.cpp model.cpp uniform.cpp simulation.cpp
 	g++ ${FLAGS} ${INCLUDES} -o show_model show_model.cpp model.cpp uniform.cpp \
 		simulation.cpp ${LIBS}
 
-sinr: sinr.cpp model.cpp uniform.cpp simulation.cpp naive.cpp backoff.cpp backoffack.cpp
+sinr: sinr.cpp model.cpp uniform.cpp simulation.cpp naive.cpp backoff.cpp backoffack.cpp densityknown.cpp
 	g++ ${FLAGS} ${INCLUDES} -o sinr sinr.cpp model.cpp uniform.cpp simulation.cpp \
-	   	naive.cpp backoff.cpp backoffack.cpp ${LIBS}
+	   	naive.cpp backoff.cpp backoffack.cpp densityknown.cpp ${LIBS}

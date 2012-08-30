@@ -1,3 +1,5 @@
+#include <cstdlib>
+#include <ctime>
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -7,6 +9,7 @@
 #include "naive.h"
 #include "backoff.h"
 #include "backoffack.h"
+#include "densityknown.h"
 
 double avg(const std::vector<int> results)
 {
@@ -37,9 +40,10 @@ double stdv(const std::vector<int> results)
 
 int main(int argc, char **argv)
 {
-    int tries, N_start = 1000, N_end = 1000, N_step = 1, S_start = 6, S_end = 6, S_step = 3;
+    int tries, N_start = 200, N_end = 200, N_step = 1, S_start = 2, S_end = 2, S_step = 3;
     int C = 1, d = 5;
     double e = .2;
+    char sep;
     //std::vector<sinr::algorithm> alg;
 
     if (argc < 3)
@@ -48,6 +52,11 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    std::istringstream(argv[1]) >> tries;
+    std::istringstream(argv[2]) >> N_start >> sep >> N_end >> sep >> N_step;
+    std::istringstream(argv[3]) >> S_start >> sep >> S_end >> sep >> S_step;
+
+    std::srand(std::time(0));
 
     for (int N = N_start; N <= N_end; N += N_step)
     {
@@ -56,17 +65,20 @@ int main(int argc, char **argv)
             std::vector<int> results;
             results.reserve(tries);
 
-            std::istringstream(argv[1]) >> tries;
-            for (; tries > 0; tries--)
+            for (int t = tries; t > 0; t--)
             {
+                int result;
                 sinr::uniform_model model(2.5, 1, 1 - e);
+
                 model.generate(N, S);
                 sinr::simulation sim(model);
-                backoffack_algorithm alg;
-                int result;
-                result = sim.run(alg);
+                density_known_algorithm alg(e, C, d);
+                result = sim.run(alg, 100000);
+                
                 if (result < 0)
+                {
                     std::cout << "F" << std::flush;
+                }
                 else
                 {
                     std::cout << "." << std::flush;
