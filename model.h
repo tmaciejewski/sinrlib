@@ -37,6 +37,8 @@ struct node
 
 class model
 {
+    protected:
+
     double alpha, beta, range;
     std::map<uid, node> nodes;
     std::map<uid, std::set<uid> > links;
