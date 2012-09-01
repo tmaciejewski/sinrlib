@@ -1,3 +1,6 @@
+#ifndef NAIVE_H
+#define NAIVE_h
+
 #include "sinrlib.h" 
 
 class naive_algorithm : public sinr::algorithm
@@ -12,3 +15,5 @@ class naive_algorithm : public sinr::algorithm
             unsigned round_number);
     bool is_done();
 };
+
+#endif // NAIVE_H

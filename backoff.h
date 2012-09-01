@@ -1,7 +1,9 @@
+#ifndef BACKOFF_H
+#define BACKOFF_H
+
 #include <map>
 
 #include "sinrlib.h"
-
 
 class backoff_algorithm : public sinr::algorithm
 {
@@ -24,3 +26,5 @@ class backoff_algorithm : public sinr::algorithm
             unsigned round_number);
     bool is_done();
 };
+
+#endif // BACKOFF_H

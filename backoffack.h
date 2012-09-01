@@ -1,3 +1,6 @@
+#ifndef BACKOFFACK_H
+#define BACKOFFACK_H
+
 #include <map>
 #include <set>
 
@@ -33,3 +36,5 @@ class backoffack_algorithm : public sinr::algorithm
     bool waiting_for_ack(sinr::uid, const std::vector<sinr::uid> &messages);
     bool send_ack(sinr::uid, const std::vector<sinr::uid> &messages);
 };
+
+#endif // BACKOFFACK_H

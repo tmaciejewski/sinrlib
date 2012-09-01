@@ -1,3 +1,6 @@
+#ifndef DENSITYKNOWN_H
+#define DENSITYKNOWN_H
+
 #include <map>
 
 #include "sinrlib.h"
@@ -31,3 +34,5 @@ class density_known_algorithm: public sinr::algorithm
 
     void eval_ppb();
 };
+
+#endif // DENSITYKNOWN_H
