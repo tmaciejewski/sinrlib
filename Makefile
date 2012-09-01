@@ -8,10 +8,10 @@ clean:
 	rm show_model
 	rm sinr
 
-show_model: show_model.cpp model.cpp uniform.cpp simulation.cpp
+show_model: show_model.cpp model.cpp uniform.cpp simulation.cpp social.cpp
 	g++ ${FLAGS} ${INCLUDES} -o show_model show_model.cpp model.cpp uniform.cpp \
-		simulation.cpp ${LIBS}
+		simulation.cpp social.cpp ${LIBS}
 
-sinr: sinr.cpp model.cpp uniform.cpp simulation.cpp naive.cpp backoff.cpp backoffack.cpp densityknown.cpp
+sinr: sinr.cpp model.cpp uniform.cpp simulation.cpp naive.cpp backoff.cpp backoffack.cpp densityknown.cpp social.cpp
 	g++ ${FLAGS} ${INCLUDES} -o sinr sinr.cpp model.cpp uniform.cpp simulation.cpp \
-	   	naive.cpp backoff.cpp backoffack.cpp densityknown.cpp ${LIBS}
+	   	naive.cpp backoff.cpp backoffack.cpp densityknown.cpp social.cpp ${LIBS}

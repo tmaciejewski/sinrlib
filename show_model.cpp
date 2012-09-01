@@ -1,10 +1,12 @@
 #include <string>
 #include <iostream>
 #include <cmath>
+#include <cstdlib>
+#include <ctime>
 
 #include "sinrlib.h"
 
-int N = 200, s = 10;
+int N = 800, s = 5;
 double e = .2;
 
 void show(const sinr::model &model, const char *filename)
@@ -26,6 +28,8 @@ int main(int argc, char **argv)
         return 1;
     }
         
+    std::srand(std::time(0));
+
     model_name = argv[1];
 
     if (model_name == "uniform")
@@ -36,7 +40,12 @@ int main(int argc, char **argv)
         //model.load("model.dat");
         show(model, argv[2]);
     }
-    //elif sys.argv[1] == 'social':
+    else if (model_name == "social")
+    {
+        sinr::social_model model(2.5, 1, 1 - e);
+        model.generate(N, s, e, 0.1);
+        show(model, argv[2]);
+    } 
     //    model = sinrlib.SocialModel(config, N, s, e, .1, 1 - e)
     //elif sys.argv[1] == 'gadget':
     //    model = sinrlib.GadgetModel(config, 10, 5, 0.1)
