@@ -5,7 +5,7 @@
 
 namespace sinr {
 
-void uniform_model::generate(unsigned n, unsigned size)
+void uniform_model::generate(unsigned n, double size)
 {
     uid current_uid = 0;
     reset();
