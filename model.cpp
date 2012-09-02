@@ -200,9 +200,6 @@ void model::export_to_pdf(int s, const char *filename) const
     surface = cairo_pdf_surface_create(filename, s * scale, s * scale);
     cr = cairo_create(surface);
 
-    cairo_set_source_rgb(cr, 1, 0, 0);
-    cairo_set_line_width(cr, 0.1);
-
     plot(cr, s, scale);
 
     cairo_show_page(cr);
@@ -212,29 +209,31 @@ void model::export_to_pdf(int s, const char *filename) const
 
 void model::plot(cairo_t *cr, int s, int scale) const
 {
-    for (std::map<uid, node>::const_iterator it = nodes.begin();
-            it != nodes.end(); it++)
+    cairo_set_line_width(cr, 0.1);
+    cairo_set_source_rgb(cr, 0, 0, 1);
+    for (std::map<uid, std::set<uid> >::const_iterator links_it = links.begin();
+            links_it != links.end(); links_it++)
     {
-        std::map<uid, std::set<uid> >::const_iterator links_it = links.find(it->first);
-        if (links_it != links.end())
+        for (std::set<uid>::const_iterator link_it = links_it->second.begin();
+                link_it != links_it->second.end(); link_it++)
         {
-            const std::set<uid> &links = links_it->second;
-
-            cairo_arc(cr, scale * it->second.x, scale * (s - it->second.y), 1, 0, 2*M_PI);
-            cairo_fill(cr);
-
-            for (std::set<uid>::const_iterator it2 = links.begin();
-                    it2 != links.end(); it2++)
+            if (links_it->first < *link_it)
             {
-                if (it->first < *it2)
-                {
-                    const node &n = (nodes.find(*it2))->second;
-                    cairo_move_to(cr, scale * it->second.x, scale * (s - it->second.y));
-                    cairo_line_to(cr, scale * n.x, scale * (s - n.y));
-                    cairo_stroke(cr);
-                }
+                const node &n1 = (nodes.find(links_it->first))->second;
+                const node &n2 = (nodes.find(*link_it))->second;
+                cairo_move_to(cr, scale * n1.x, scale * (s - n1.y));
+                cairo_line_to(cr, scale * n2.x, scale * (s - n2.y));
             }
         }
+    }
+    cairo_stroke(cr);
+
+    cairo_set_source_rgb(cr, 1, 0, 0);
+    for (std::map<uid, node>::const_iterator node_it = nodes.begin();
+            node_it != nodes.end(); node_it++)
+    {
+            cairo_arc(cr, scale * node_it->second.x, scale * (s - node_it->second.y), 1, 0, 2*M_PI);
+            cairo_fill(cr);
     }
 }
 
