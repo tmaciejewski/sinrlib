@@ -6,6 +6,8 @@
 void backoffack_algorithm::init(const sinr::model *m)
 {
     model = m;
+    active.clear();
+    states.clear();
     active.insert(m->get_source());
     states[m->get_source()].broadcasting = true;
     // TODO: density

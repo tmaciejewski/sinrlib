@@ -25,6 +25,7 @@ class backoff_algorithm : public sinr::algorithm
     bool on_round_end(sinr::uid u, const std::vector<sinr::uid> &messages,
             unsigned round_number);
     bool is_done();
+    const char *name() { return "Backoff"; }
 };
 
 #endif // BACKOFF_H

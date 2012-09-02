@@ -12,6 +12,7 @@ class algorithm
     virtual void init(const model *m) = 0;
     virtual bool on_round_end(uid u, const std::vector<uid> & messages, unsigned round_number) = 0;
     virtual bool is_done() = 0;
+    virtual const char *name() = 0;
 };
 
 class simulation

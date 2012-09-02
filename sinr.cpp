@@ -4,6 +4,7 @@
 #include <sstream>
 #include <vector>
 #include <algorithm>
+#include <memory>
 
 #include "sinrlib.h"
 #include "naive.h"
@@ -44,7 +45,7 @@ int main(int argc, char **argv)
     int C = 1, d = 5;
     double e = .2;
     char sep;
-    //std::vector<sinr::algorithm> alg;
+    std::vector<sinr::algorithm*> algs;
 
     if (argc < 3)
     {
@@ -58,88 +59,55 @@ int main(int argc, char **argv)
 
     std::srand(std::time(0));
 
+    algs.push_back(new naive_algorithm());
+    algs.push_back(new backoffack_algorithm());
+    //algs.push_back(new backoff_algorithm());
+    algs.push_back(new density_known_algorithm(e, C, d));
+
     for (int N = N_start; N <= N_end; N += N_step)
     {
         for (int S = S_start; S <= S_end; S += S_step)
         {
-            std::vector<int> results;
-            results.reserve(tries);
+            std::vector<std::vector<int> > results;
+            results.resize(algs.size());
 
             for (int t = tries; t > 0; t--)
             {
-                int result;
-                sinr::uniform_model model(2.5, 1, 1 - e);
+                unsigned alg_index = 0;
 
+                sinr::uniform_model model(2.5, 1, 1 - e);
                 model.generate(N, S);
-                sinr::simulation sim(model);
-                density_known_algorithm alg(e, C, d);
-                result = sim.run(alg, 100000);
                 
-                if (result < 0)
+                while (alg_index < algs.size())
                 {
-                    std::cout << "F" << std::flush;
+                    int result;
+
+                    sinr::simulation sim(model);
+                    result = sim.run(*algs[alg_index], 100000);
+                    
+                    if (result < 0)
+                    {
+                        std::cout << "F" << std::flush;
+                    }
+                    else
+                    {
+                        std::cout << "." << std::flush;
+                        results[alg_index].push_back(result);
+                        alg_index++;
+                    }
                 }
-                else
-                {
-                    std::cout << "." << std::flush;
-                    results.push_back(result);
-                }
+                std::cout << ",";
             }
-            std::cout << '\n' << N << ' ' << S << ' '
-                << avg(results) << ' ' << stdv(results) << std::endl;
+            
+            std::cout << '\n'; 
+
+            for (unsigned i = 0; i < results.size(); i++)
+            {
+                std::cout << algs[i]->name() << '\t' << N << '\t' << S << '\t'
+                    << avg(results[i]) << '\t' << stdv(results[i]) << std::endl;
+            }
         }
     }
 
     return 0;
 }
-
-/*def main():
-
-    alg = [ #algorithms.DensityUnknownAlgorithm(config, e, C, d, d), \
-            algorithms.DensityKnownAlgorithm(config, e, C, d), \
-            #algorithms.BackoffAlgorithm(config), \
-            algorithms.BackoffAckAlgorithm(config), \
-            ]
-
-    for N in range(N_start, N_end + 1, N_step):
-        S = S_start
-        while S <= S_end:
-            results = {}
-            diams = []
-            for algorithm in alg:
-                results[algorithm] = []
-            for _ in range(tries):
-                #model = sinrlib.UniformModel(config, N, S, 1 - e)
-                #model = sinrlib.SocialModel(config, N, S, e, 0.1, 1 - e)
-                model = sinrlib.GadgetModel(config, N, int(S), 1 - e)
-                #model = sinrlib.Gadget2Model(config, N, S, e, 1 - e)
-                #model.show()
-
-                diameter = model.diameter()
-                diams.append(diameter)
-                for algorithm in alg:
-                    try:
-                        simulation = sinrlib.Simulation(model, lambda: sinrlib.ConstNoise(1.0))
-                        r = simulation.run(algorithm, 100000)
-                        results[algorithm].append(r)
-                        sys.stdout.write('.')
-                        sys.stdout.flush()
-                    except sinrlib.AlgorithmFailed:
-                        print >> sys.stderr, 'algorithm', algorithm, 'failed for N = %s, S = %s' % (N, S)
-                        #model.show()
-                sys.stdout.write(',')
-                sys.stdout.flush()
-            print 
-
-
-            for algorithm in results:
-                res = results[algorithm]
-                avg = float(sum(res)) / len(res)
-                std = math.sqrt(sum([(r - avg)**2 for r in res]) / len(res))
-                avg_diam = float(sum(diams)) / len(diams)
-    
-                print algorithm.__class__.__name__, N, d, e, S, avg, std, avg_diam, avg / avg_diam
-
-            S += S_step
-
-*/

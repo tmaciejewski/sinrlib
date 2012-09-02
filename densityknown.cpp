@@ -7,10 +7,11 @@
 void density_known_algorithm::init(const sinr::model *m)
 {
     model = m;
+    active.clear();
+    states.clear();
     active.insert(m->get_source());
     phase_round = 0;
     gamma = e / (2 * std::sqrt(2));
-    states.clear();
     eval_ppb();
 }
 

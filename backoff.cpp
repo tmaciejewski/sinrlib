@@ -5,6 +5,8 @@
 
 void backoff_algorithm::init(const sinr::model *m)
 {
+    active.clear();
+    states.clear();
     model = m;
     active.insert(m->get_source());
     // TODO: density

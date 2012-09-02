@@ -6,6 +6,7 @@
 void naive_algorithm::init(const sinr::model *m)
 {
     model = m;
+    active.clear();
     active.insert(m->get_source());
 }
 
