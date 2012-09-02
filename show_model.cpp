@@ -6,7 +6,7 @@
 
 #include "sinrlib.h"
 
-int N = 800, s = 5;
+int N = 50, s = 10;
 double e = .2;
 
 void show(const sinr::model &model, const char *filename)
@@ -46,9 +46,12 @@ int main(int argc, char **argv)
         model.generate(N, s, e, 0.1);
         show(model, argv[2]);
     } 
-    //    model = sinrlib.SocialModel(config, N, s, e, .1, 1 - e)
-    //elif sys.argv[1] == 'gadget':
-    //    model = sinrlib.GadgetModel(config, 10, 5, 0.1)
+    else if (model_name == "gadget")
+    {
+        sinr::gadget_model model(2.5, 1, 1 - e);
+        model.generate(s, N);
+        show(model, argv[2]);
+    }
     else
     {
         std::cout << "unknown model name\n";
