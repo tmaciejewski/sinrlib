@@ -46,9 +46,6 @@ class model
     std::map<uid, uid> components;
     uid source;
 
-    // TODO
-    // power_cache = {}
-
     public:
 
     model(double a, double b, double r)

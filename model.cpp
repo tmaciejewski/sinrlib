@@ -301,7 +301,6 @@ void model::reset()
     links.clear();
     components.clear();
     reachable.clear();
-
 }
 
 } // namespace sinr
