@@ -209,7 +209,7 @@ void model::export_to_pdf(int s, const char *filename) const
 
 void model::plot(cairo_t *cr, int s, int scale) const
 {
-    cairo_set_line_width(cr, 0.1);
+    cairo_set_line_width(cr, 0.2);
     cairo_set_source_rgb(cr, 0, 0, 1);
     for (std::map<uid, std::set<uid> >::const_iterator links_it = links.begin();
             links_it != links.end(); links_it++)
@@ -232,8 +232,11 @@ void model::plot(cairo_t *cr, int s, int scale) const
     for (std::map<uid, node>::const_iterator node_it = nodes.begin();
             node_it != nodes.end(); node_it++)
     {
-            cairo_arc(cr, scale * node_it->second.x, scale * (s - node_it->second.y), 1, 0, 2*M_PI);
-            cairo_fill(cr);
+            cairo_arc(cr, scale * node_it->second.x, scale * (s - node_it->second.y), 2, 0, 2*M_PI);
+            cairo_set_source_rgb(cr, 1, 0, 0);
+            cairo_fill_preserve(cr);
+            cairo_set_source_rgb(cr, 0, 0, 0);
+            cairo_stroke(cr);
     }
 }
 
