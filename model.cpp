@@ -223,10 +223,10 @@ void model::plot(cairo_t *cr, int s, int scale) const
                 const node &n2 = (nodes.find(*link_it))->second;
                 cairo_move_to(cr, scale * n1.x, scale * (s - n1.y));
                 cairo_line_to(cr, scale * n2.x, scale * (s - n2.y));
+                cairo_stroke(cr);
             }
         }
     }
-    cairo_stroke(cr);
 
     cairo_set_source_rgb(cr, 1, 0, 0);
     for (std::map<uid, node>::const_iterator node_it = nodes.begin();
