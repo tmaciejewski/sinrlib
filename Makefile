@@ -12,6 +12,6 @@ show_model: show_model.cpp model.cpp uniform.cpp simulation.cpp social.cpp gadge
 	g++ ${FLAGS} ${INCLUDES} -o show_model show_model.cpp model.cpp uniform.cpp \
 		simulation.cpp social.cpp gadget.cpp ${LIBS}
 
-sinr: sinr.cpp model.cpp uniform.cpp simulation.cpp naive.cpp backoff.cpp backoffack.cpp densityknown.cpp social.cpp gadget.cpp
-	g++ ${FLAGS} ${INCLUDES} -o sinr sinr.cpp model.cpp uniform.cpp simulation.cpp \
+sinr: sinr.cpp model.cpp uniform.cpp simulation.cpp naive.cpp backoff.cpp backoffack.cpp densityunknown.cpp densityknown.cpp social.cpp gadget.cpp
+	g++ ${FLAGS} ${INCLUDES} -o sinr sinr.cpp model.cpp uniform.cpp simulation.cpp densityunknown.cpp \
 	   	naive.cpp backoff.cpp backoffack.cpp densityknown.cpp social.cpp gadget.cpp ${LIBS}
