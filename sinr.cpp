@@ -11,6 +11,7 @@
 #include "backoff.h"
 #include "backoffack.h"
 #include "densityknown.h"
+#include "densityunknown.h"
 
 double avg(const std::vector<int> results)
 {
@@ -58,11 +59,13 @@ int main(int argc, char **argv)
     std::istringstream(argv[3]) >> S_start >> sep >> S_end >> sep >> S_step;
 
     std::srand(std::time(0));
+    //std::srand(0);
 
     algs.push_back(new naive_algorithm());
-    algs.push_back(new backoffack_algorithm());
+    //algs.push_back(new backoffack_algorithm());
     //algs.push_back(new backoff_algorithm());
     algs.push_back(new density_known_algorithm(e, C, d));
+    algs.push_back(new density_unknown_algorithm(e, C, d, d));
 
     for (int N = N_start; N <= N_end; N += N_step)
     {
