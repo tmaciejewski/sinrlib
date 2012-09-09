@@ -28,8 +28,8 @@ void model::add_node(uid u, const node &n)
             // TODO: change to real range
             if (dist < 1)
             {
-               reachable[other->first].push_back(u);
-               reachable[u].push_back(other->first);
+                reachable[other->first].push_back(u);
+                reachable[u].push_back(other->first);
             }
         }
 
@@ -289,6 +289,7 @@ void model::extract_nodes(const std::vector<uid> &new_uids)
     std::map<uid, node> old_nodes;
     nodes.swap(old_nodes);
     links.clear();
+    reachable.clear();
     components.clear();
 
     for (std::vector<uid>::const_iterator it = new_uids.begin();
