@@ -274,7 +274,7 @@ void model::extract_nodes(const std::vector<uid> &new_uids)
     for (unsigned i = 0; i < new_uids.size(); i++)
     {
         uid u = new_uids[i];
-        add_node(old_nodes[u]);
+        add_node(node(old_nodes[u].x, old_nodes[u].y));
     } 
 }
 
