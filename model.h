@@ -3,7 +3,6 @@
 
 #include <cmath>
 #include <map>
-#include <set>
 #include <vector>
 #include <cairo.h>
 #include <cairo-pdf.h>
@@ -41,8 +40,8 @@ class model
 
     double alpha, beta, range;
     std::map<uid, node> nodes;
-    std::map<uid, std::set<uid> > links;
-    std::map<uid, std::set<uid> > reachable;
+    std::map<uid, std::vector<uid> > links;
+    std::map<uid, std::vector<uid> > reachable;
     std::map<uid, uid> components;
     uid source;
 
@@ -63,7 +62,7 @@ class model
         return nodes;
     }
 
-    const std::map<uid, std::set<uid> > & get_links() const
+    const std::map<uid, std::vector<uid> > & get_links() const
     {
         return links;
     }
@@ -86,7 +85,7 @@ class model
     void plot(cairo_t *cr, int s, int scale) const;
     void set_source(uid u) { source = u; }
     bool choose_component(unsigned desired_size);
-    void extract_nodes(const std::set<uid> &new_uids);
+    void extract_nodes(const std::vector<uid> &new_uids);
     void reset();
 };
 

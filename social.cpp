@@ -31,7 +31,7 @@ void social_model::update_weights(uid u)
     int tile = uid_to_tile[u];
     std::set<uid> tiles2;
 
-    for (std::set<uid>::iterator u1 = links[u].begin();
+    for (std::vector<uid>::iterator u1 = links[u].begin();
             u1 != links[u].end(); u1++)
     {
         int tile1 = uid_to_tile[*u1];
@@ -42,7 +42,7 @@ void social_model::update_weights(uid u)
         new_for_u1.erase(*u1);
         sec_links[tile1].insert(new_for_u1.begin(), new_for_u1.end());
 
-        for (std::set<uid>::iterator u2 = links[*u1].begin();
+        for (std::vector<uid>::iterator u2 = links[*u1].begin();
                 u2 != links[*u1].end(); u2++)
         {
             if (u != *u2)

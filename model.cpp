@@ -1,6 +1,7 @@
 #include "model.h"
 
 #include <queue>
+#include <set>
 #include <algorithm>
 #include <iostream>
 #include <fstream>
@@ -11,8 +12,7 @@ void model::add_node(uid u, const node &n)
 {
     if (nodes.find(u) == nodes.end())
     {
-        links[u]; // create empty links set
-        components[u] = u; // in its own component
+        components[u] = u; // initially in its own component
         
         for (std::map<uid, node>::iterator other = nodes.begin();
                 other != nodes.end(); other++)
@@ -20,16 +20,16 @@ void model::add_node(uid u, const node &n)
             double dist = n - other->second;
             if (dist < range)
             {
-                links[u].insert(other->first);
-                links[other->first].insert(u);
+                links[u].push_back(other->first);
+                links[other->first].push_back(u);
                 component_union(u, other->first);
             }
             
             // TODO: change to real range
             if (dist < 1)
             {
-               reachable[other->first].insert(u);
-               reachable[u].insert(other->first);
+               reachable[other->first].push_back(u);
+               reachable[u].push_back(other->first);
             }
         }
 
@@ -96,8 +96,8 @@ void model::eval(const std::vector<uid> &senders,
     for (std::vector<uid>::const_iterator sender = senders.begin();
             sender != senders.end(); sender++)
     {
-        const std::set<uid> reachables = reachable.find(*sender)->second;
-        for (std::set<uid>::const_iterator receiver = reachables.begin();
+        const std::vector<uid> reachables = reachable.find(*sender)->second;
+        for (std::vector<uid>::const_iterator receiver = reachables.begin();
                 receiver != reachables.end(); receiver++)
         {
             bool success = false;
@@ -173,10 +173,10 @@ unsigned model::diameter_bfs(uid start_uid) const
     while (queue.size() > 0)
     {
         uid u = queue.front();
-        const std::set<uid> &u_links = links.find(u)->second;      
+        const std::vector<uid> &u_links = links.find(u)->second;      
         queue.pop();
 
-        for (std::set<uid>::const_iterator u2 = u_links.begin();
+        for (std::vector<uid>::const_iterator u2 = u_links.begin();
                 u2 != u_links.end(); u2++)
         {
             if (visited.find(*u2) == visited.end())
@@ -211,10 +211,10 @@ void model::plot(cairo_t *cr, int s, int scale) const
 {
     cairo_set_line_width(cr, 0.2);
     cairo_set_source_rgb(cr, 0, 0, 1);
-    for (std::map<uid, std::set<uid> >::const_iterator links_it = links.begin();
+    for (std::map<uid, std::vector<uid> >::const_iterator links_it = links.begin();
             links_it != links.end(); links_it++)
     {
-        for (std::set<uid>::const_iterator link_it = links_it->second.begin();
+        for (std::vector<uid>::const_iterator link_it = links_it->second.begin();
                 link_it != links_it->second.end(); link_it++)
         {
             if (links_it->first < *link_it)
@@ -260,7 +260,7 @@ void model::load(const char *filename)
 
 bool model::choose_component(unsigned desired_size)
 {
-    std::map<uid, std::set<uid> > all_components;
+    std::map<uid, std::vector<uid> > all_components;
 
     if (nodes.size() < desired_size)
         return false;
@@ -268,10 +268,10 @@ bool model::choose_component(unsigned desired_size)
     for (std::map<uid, node>::iterator it = nodes.begin();
            it != nodes.end(); it++)
     {
-        all_components[component_find(it->first)].insert(it->first);
+        all_components[component_find(it->first)].push_back(it->first);
     }
 
-    for (std::map<uid, std::set<uid> >::iterator it = all_components.begin();
+    for (std::map<uid, std::vector<uid> >::iterator it = all_components.begin();
             it != all_components.end(); it++)
     {
         if (it->second.size() >= desired_size)
@@ -284,14 +284,14 @@ bool model::choose_component(unsigned desired_size)
     return false;
 }
 
-void model::extract_nodes(const std::set<uid> &new_uids)
+void model::extract_nodes(const std::vector<uid> &new_uids)
 {
     std::map<uid, node> old_nodes;
     nodes.swap(old_nodes);
     links.clear();
     components.clear();
 
-    for (std::set<uid>::const_iterator it = new_uids.begin();
+    for (std::vector<uid>::const_iterator it = new_uids.begin();
            it != new_uids.end(); it++)
     {
        add_node(*it, old_nodes[*it]);
