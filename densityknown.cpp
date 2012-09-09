@@ -19,7 +19,7 @@ void density_known_algorithm::eval_ppb()
 {
     std::map<std::pair<int, int>, unsigned> density;
 
-    for (std::map<sinr::uid, sinr::node>::const_iterator it = model->get_nodes().begin();
+    for (sinr::nodes_map::const_iterator it = model->get_nodes().begin();
             it != model->get_nodes().end(); it++)
     {
         int box_x, box_y;
@@ -30,7 +30,7 @@ void density_known_algorithm::eval_ppb()
         density[std::make_pair(box_x, box_y)]++;
     }
 
-    for (std::map<sinr::uid, sinr::node>::const_iterator it = model->get_nodes().begin();
+    for (sinr::nodes_map::const_iterator it = model->get_nodes().begin();
             it != model->get_nodes().end(); it++)
     {
         int box_x, box_y;

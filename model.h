@@ -9,7 +9,6 @@
 
 namespace sinr {
 
-typedef unsigned uid;
 
 struct node
 {
@@ -34,14 +33,18 @@ struct node
     }
 };    
 
+typedef unsigned uid;
+typedef std::map<uid, node> nodes_map;
+typedef std::map<uid, std::vector<uid> > links_map;
+
 class model
 {
     protected:
 
     double alpha, beta, range;
-    std::map<uid, node> nodes;
-    std::map<uid, std::vector<uid> > links;
-    std::map<uid, std::vector<uid> > reachable;
+    nodes_map nodes;
+    links_map links;
+    links_map reachables;
     std::map<uid, uid> components;
     uid source;
 
@@ -57,12 +60,12 @@ class model
         return source;
     }
 
-    const std::map<uid, node> & get_nodes() const
+    const nodes_map & get_nodes() const
     {
         return nodes;
     }
 
-    const std::map<uid, std::vector<uid> > & get_links() const
+    const links_map & get_links() const
     {
         return links;
     }

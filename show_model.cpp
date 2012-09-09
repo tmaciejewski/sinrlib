@@ -58,7 +58,7 @@ int main(int argc, char **argv)
         return 2;
     }
 
-    for (std::map<sinr::uid, std::vector<sinr::uid> >::const_iterator node_it = m->get_links().begin();
+    for (sinr::links_map::const_iterator node_it = m->get_links().begin();
             node_it != m->get_links().end(); node_it++)
     {
         std::cout << "node " << node_it->first << ":";

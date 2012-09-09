@@ -14,7 +14,7 @@ void model::add_node(uid u, const node &n)
     {
         components[u] = u; // initially in its own component
         
-        for (std::map<uid, node>::iterator other = nodes.begin();
+        for (nodes_map::iterator other = nodes.begin();
                 other != nodes.end(); other++)
         {
             double dist = n - other->second;
@@ -28,8 +28,8 @@ void model::add_node(uid u, const node &n)
             // TODO: change to real range
             if (dist < 1)
             {
-                reachable[other->first].push_back(u);
-                reachable[u].push_back(other->first);
+                reachables[other->first].push_back(u);
+                reachables[u].push_back(other->first);
             }
         }
 
@@ -71,7 +71,7 @@ void model::component_union(uid u1, uid u2)
 bool model::is_connected()
 {
     std::set<uid> roots;
-    for (std::map<uid, node>::iterator it = nodes.begin();
+    for (nodes_map::iterator it = nodes.begin();
             it != nodes.end(); it++)
     {
         uid root = component_find(it->first);
@@ -89,16 +89,16 @@ double model::power(uid sender, uid receiver) const
 }
 
 void model::eval(const std::vector<uid> &senders,
-        std::map<uid, std::vector<uid> > &result) const
+        links_map &result) const
 {
     result.clear();
 
     for (std::vector<uid>::const_iterator sender = senders.begin();
             sender != senders.end(); sender++)
     {
-        const std::vector<uid> reachables = reachable.find(*sender)->second;
-        for (std::vector<uid>::const_iterator receiver = reachables.begin();
-                receiver != reachables.end(); receiver++)
+        const std::vector<uid> reachable = reachables.find(*sender)->second;
+        for (std::vector<uid>::const_iterator receiver = reachable.begin();
+                receiver != reachable.end(); receiver++)
         {
             bool success = false;
 
@@ -141,7 +141,7 @@ void model::eval(const std::vector<uid> &senders,
 unsigned model::diameter() const
 {
     unsigned diam_max = 0;
-    for (std::map<uid, node>::const_iterator it = nodes.begin(); it != nodes.end(); it++)
+    for (nodes_map::const_iterator it = nodes.begin(); it != nodes.end(); it++)
     {
         unsigned diam = diameter_bfs(it->first);
         if (diam > diam_max)
@@ -211,7 +211,7 @@ void model::plot(cairo_t *cr, int s, int scale) const
 {
     cairo_set_line_width(cr, 0.2);
     cairo_set_source_rgb(cr, 0, 0, 1);
-    for (std::map<uid, std::vector<uid> >::const_iterator links_it = links.begin();
+    for (links_map::const_iterator links_it = links.begin();
             links_it != links.end(); links_it++)
     {
         for (std::vector<uid>::const_iterator link_it = links_it->second.begin();
@@ -229,7 +229,7 @@ void model::plot(cairo_t *cr, int s, int scale) const
     }
 
     cairo_set_source_rgb(cr, 1, 0, 0);
-    for (std::map<uid, node>::const_iterator node_it = nodes.begin();
+    for (nodes_map::const_iterator node_it = nodes.begin();
             node_it != nodes.end(); node_it++)
     {
             cairo_arc(cr, scale * node_it->second.x, scale * (s - node_it->second.y), 2, 0, 2*M_PI);
@@ -260,18 +260,18 @@ void model::load(const char *filename)
 
 bool model::choose_component(unsigned desired_size)
 {
-    std::map<uid, std::vector<uid> > all_components;
+    links_map all_components;
 
     if (nodes.size() < desired_size)
         return false;
 
-    for (std::map<uid, node>::iterator it = nodes.begin();
+    for (nodes_map::iterator it = nodes.begin();
            it != nodes.end(); it++)
     {
         all_components[component_find(it->first)].push_back(it->first);
     }
 
-    for (std::map<uid, std::vector<uid> >::iterator it = all_components.begin();
+    for (links_map::iterator it = all_components.begin();
             it != all_components.end(); it++)
     {
         if (it->second.size() >= desired_size)
@@ -286,11 +286,9 @@ bool model::choose_component(unsigned desired_size)
 
 void model::extract_nodes(const std::vector<uid> &new_uids)
 {
-    std::map<uid, node> old_nodes;
+    nodes_map old_nodes;
     nodes.swap(old_nodes);
-    links.clear();
-    reachable.clear();
-    components.clear();
+    reset();
 
     for (std::vector<uid>::const_iterator it = new_uids.begin();
            it != new_uids.end(); it++)
@@ -304,7 +302,7 @@ void model::reset()
     nodes.clear();
     links.clear();
     components.clear();
-    reachable.clear();
+    reachables.clear();
 }
 
 } // namespace sinr
