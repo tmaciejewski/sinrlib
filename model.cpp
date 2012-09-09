@@ -35,9 +35,9 @@ void model::add_node(node n)
             nodes[u].reachables.push_back(other);
             nodes[other].reachables.push_back(u);
         }
-
-
     }
+
+    nodes[u].power.push_back(0); // power to itself
 }
 
 uid model::component_find(uid u)
