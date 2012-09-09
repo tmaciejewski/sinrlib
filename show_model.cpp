@@ -29,7 +29,8 @@ int main(int argc, char **argv)
         return 1;
     }
         
-    std::srand(std::time(0));
+    //std::srand(std::time(0));
+    std::srand(0);
 
     model_name = argv[1];
 
