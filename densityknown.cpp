@@ -19,26 +19,24 @@ void density_known_algorithm::eval_ppb()
 {
     std::map<std::pair<int, int>, unsigned> density;
 
-    for (sinr::nodes_map::const_iterator it = model->get_nodes().begin();
-            it != model->get_nodes().end(); it++)
+    for (sinr::uid u = 0; u < model->get_nodes().size(); u++)
     {
         int box_x, box_y;
-        box_x = it->second.x / gamma;
-        box_y = it->second.y / gamma;
-        states[it->first].box_x = box_x;
-        states[it->first].box_y = box_y;
+        box_x = model->get_nodes()[u].x / gamma;
+        box_y = model->get_nodes()[u].y / gamma;
+        states[u].box_x = box_x;
+        states[u].box_y = box_y;
         density[std::make_pair(box_x, box_y)]++;
     }
 
-    for (sinr::nodes_map::const_iterator it = model->get_nodes().begin();
-            it != model->get_nodes().end(); it++)
+    for (sinr::uid u = 0; u < model->get_nodes().size(); u++)
     {
         int box_x, box_y;
-        box_x = it->second.x / gamma;
-        box_y = it->second.y / gamma;
-        states[it->first].ppb = C / density[std::make_pair(box_x, box_y)];
-        //std::cout << "uid " << it->first << " has ppb = "
-        //    << states[it->first].ppb << std::endl;
+        box_x = model->get_nodes()[u].x / gamma;
+        box_y = model->get_nodes()[u].y / gamma;
+        states[u].ppb = C / density[std::make_pair(box_x, box_y)];
+        //std::cout << "uid " << u << " has ppb = "
+        //    << states[u].ppb << std::endl;
     }
 }
 

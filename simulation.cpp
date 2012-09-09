@@ -37,12 +37,11 @@ int simulation::run(algorithm &alg, unsigned max_rounds)
         //std::cout << "messages: " << messages.size() << std::endl;
 
         senders.clear();
-        for (std::map<uid, node>::const_iterator u = m.get_nodes().begin();
-                u != m.get_nodes().end(); u++)
+        for (uid u = 0; u < m.get_nodes().size(); u++)
         {
-            if (alg.on_round_end(u->first, messages[u->first], round_number))
+            if (alg.on_round_end(u, messages[u], round_number))
             {
-                senders.push_back(u->first);
+                senders.push_back(u);
             }
         }
 

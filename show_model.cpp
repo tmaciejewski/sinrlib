@@ -58,12 +58,11 @@ int main(int argc, char **argv)
         return 2;
     }
 
-    for (sinr::links_map::const_iterator node_it = m->get_links().begin();
-            node_it != m->get_links().end(); node_it++)
+    for (sinr::uid u = 0; u < m->get_nodes().size(); u++)
     {
-        std::cout << "node " << node_it->first << ":";
-        for (std::vector<sinr::uid>::const_iterator link_it = node_it->second.begin();
-                link_it != node_it->second.end(); link_it++)
+        std::cout << "node " << u << ":";
+        for (std::vector<sinr::uid>::const_iterator link_it = m->get_nodes()[u].links.begin();
+                link_it != m->get_nodes()[u].links.end(); link_it++)
         {
             std::cout << " " << *link_it;
         }

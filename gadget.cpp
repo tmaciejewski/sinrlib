@@ -15,7 +15,7 @@ void gadget_model::generate(unsigned m, unsigned p)
 
     reset();
 
-    add_node(current_uid, node(source_x, source_y));
+    add_node(node(source_x, source_y));
     current_uid++;
 
     while (m-- > 0)
@@ -28,7 +28,7 @@ void gadget_model::generate(unsigned m, unsigned p)
             x = source_x + s * (static_cast<double>(std::rand()) / RAND_MAX);
             y = source_y + s + eps;
 
-            add_node(current_uid, node(x, y));
+            add_node(node(x, y));
             recent_nodes.push_back(current_uid);
             current_uid++;
         }
@@ -37,7 +37,7 @@ void gadget_model::generate(unsigned m, unsigned p)
         source_x = nodes[next_source].x;
         source_y = nodes[next_source].y + s;
 
-        add_node(current_uid, node(source_x, source_y));
+        add_node(node(source_x, source_y));
         current_uid++;
     }
 

@@ -9,11 +9,14 @@
 
 namespace sinr {
 
+typedef unsigned uid;
 
 struct node
 {
     double x, y;
     double noise;
+    std::vector<uid> links, reachables;
+    uid component;
 
     node(double x_ = 0.0, double y_ = 0.0, double noise_ = 1)
         : x(x_), y(y_), noise(noise_)
@@ -33,19 +36,12 @@ struct node
     }
 };    
 
-typedef unsigned uid;
-typedef std::map<uid, node> nodes_map;
-typedef std::map<uid, std::vector<uid> > links_map;
-
 class model
 {
     protected:
 
     double alpha, beta, range;
-    nodes_map nodes;
-    links_map links;
-    links_map reachables;
-    std::map<uid, uid> components;
+    std::vector<node> nodes;
     uid source;
 
     public:
@@ -60,14 +56,9 @@ class model
         return source;
     }
 
-    const nodes_map & get_nodes() const
+    const std::vector<node> & get_nodes() const
     {
         return nodes;
-    }
-
-    const links_map & get_links() const
-    {
-        return links;
     }
 
     double power(uid sender, uid receiver) const;
@@ -81,7 +72,7 @@ class model
 
     protected:
 
-    void add_node(uid u, const node &n);
+    void add_node(node n);
     void component_union(uid u1, uid u2);
     uid  component_find(uid u);
     bool is_connected();

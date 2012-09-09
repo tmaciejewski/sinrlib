@@ -31,19 +31,19 @@ void social_model::update_weights(uid u)
     int tile = uid_to_tile[u];
     std::set<uid> tiles2;
 
-    for (std::vector<uid>::iterator u1 = links[u].begin();
-            u1 != links[u].end(); u1++)
+    for (std::vector<uid>::iterator u1 = nodes[u].links.begin();
+            u1 != nodes[u].links.end(); u1++)
     {
         int tile1 = uid_to_tile[*u1];
         std::set<uid> new_for_u1;
 
         // tell my link about my other links
-        new_for_u1.insert(links[u].begin(), links[u].end());
+        new_for_u1.insert(nodes[u].links.begin(), nodes[u].links.end());
         new_for_u1.erase(*u1);
         sec_links[tile1].insert(new_for_u1.begin(), new_for_u1.end());
 
-        for (std::vector<uid>::iterator u2 = links[*u1].begin();
-                u2 != links[*u1].end(); u2++)
+        for (std::vector<uid>::iterator u2 = nodes[*u1].links.begin();
+                u2 != nodes[*u1].links.end(); u2++)
         {
             if (u != *u2)
             {
@@ -106,7 +106,7 @@ void social_model::generate(unsigned n, double size, double e,
             //std::cout << "social node: "
             //    << x << " " << y << '\n';
         }
-        add_node(current_uid, node(x, y));
+        add_node(node(x, y));
 
         i = tiles - 1 - y / e;
         j = x / e;
@@ -117,7 +117,7 @@ void social_model::generate(unsigned n, double size, double e,
         current_uid++;
     }
 
-    set_source(get_nodes().begin()->first);
+    set_source(std::rand() % get_nodes().size());
 }
 
 } // namespace sinr
