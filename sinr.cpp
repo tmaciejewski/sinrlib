@@ -58,11 +58,11 @@ int main(int argc, char **argv)
     std::istringstream(argv[2]) >> N_start >> sep >> N_end >> sep >> N_step;
     std::istringstream(argv[3]) >> S_start >> sep >> S_end >> sep >> S_step;
 
-    std::srand(std::time(0));
-    //std::srand(0);
+    //std::srand(std::time(0));
+    std::srand(0);
 
     algs.push_back(new naive_algorithm());
-    //algs.push_back(new backoffack_algorithm());
+    algs.push_back(new backoffack_algorithm());
     //algs.push_back(new backoff_algorithm());
     algs.push_back(new density_known_algorithm(e, C, d));
     algs.push_back(new density_unknown_algorithm(e, C, d, d));
