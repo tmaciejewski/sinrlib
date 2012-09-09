@@ -17,6 +17,11 @@ void model::add_node(node n)
     for (uid other = 0; other < nodes.size() - 1; other++)
     {
         double dist = nodes[u] - nodes[other];
+        double power = 1.0 / std::pow(dist, alpha);
+        
+        nodes[u].power.push_back(power);
+        nodes[other].power.push_back(power);
+        
         if (dist < range)
         {
             nodes[u].links.push_back(other);
@@ -30,6 +35,8 @@ void model::add_node(node n)
             nodes[u].reachables.push_back(other);
             nodes[other].reachables.push_back(u);
         }
+
+
     }
 }
 
@@ -76,12 +83,6 @@ bool model::is_connected()
     return roots.size() == 1;
 }
 
-double model::power(uid sender, uid receiver) const
-{
-    double dist = nodes[sender] - nodes[receiver];
-    return 1.0 / std::pow(dist, alpha);
-}
-
 void model::eval(const std::vector<uid> &senders,
         std::map<uid, std::vector<uid> > &result) const
 {
@@ -108,7 +109,7 @@ void model::eval(const std::vector<uid> &senders,
                 {
                     if (*node != *sender)
                     {
-                        interference += power(*node, *receiver);
+                        interference += nodes[*node].power[*receiver];
                     }
                 }
 
@@ -116,7 +117,7 @@ void model::eval(const std::vector<uid> &senders,
 
                 if (interference != 0)
                 {
-                    double sinr = power(*sender, *receiver) / interference;
+                    double sinr = nodes[*sender].power[*receiver] / interference;
                     if (sinr > beta)
                         success = true;
                 }

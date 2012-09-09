@@ -16,6 +16,7 @@ struct node
     double x, y;
     double noise;
     std::vector<uid> links, reachables;
+    std::vector<double> power;
     uid component;
 
     node(double x_ = 0.0, double y_ = 0.0, double noise_ = 1)
@@ -23,11 +24,6 @@ struct node
     {
     }
 
-    bool operator==(const node & other) const
-    {
-        return x == other.x && y == other.y;
-    }
-        
     double operator-(const node & other) const
     {
         double dx = other.x - x;
@@ -61,7 +57,6 @@ class model
         return nodes;
     }
 
-    double power(uid sender, uid receiver) const;
     void eval(const std::vector<uid> &senders,
             std::map<uid, std::vector<uid> > &result) const;
     unsigned diameter() const;
