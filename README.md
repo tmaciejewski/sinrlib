@@ -13,10 +13,14 @@ to be in /usr/include/cairo/
 Installation
 ============
 
+Installation is done by autoconf tool:
+
+```
 autoreconf --install
 ./configure
 make
 make install
+```
 
 Running
 =======
