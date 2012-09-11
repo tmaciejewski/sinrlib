@@ -84,9 +84,10 @@ bool model::is_connected()
 }
 
 void model::eval(const std::vector<uid> &senders,
-        std::map<uid, std::vector<uid> > &result) const
+        std::vector< std::vector<uid> > &result) const
 {
     result.clear();
+    result.resize(nodes.size());
 
     for (std::vector<uid>::const_iterator sender = senders.begin();
             sender != senders.end(); sender++)
@@ -146,20 +147,11 @@ unsigned model::diameter() const
     return diam_max;          
 }
 
-template <class MapItem>
-struct map_val_comp
-{
-    bool operator()(MapItem it1, MapItem it2)
-    {
-        return it1.second < it2.second;
-    }
-};
-
 unsigned model::diameter_bfs(uid start_uid) const
 {
     std::set<uid> visited;
     std::queue<uid> queue;
-    std::map<uid, unsigned> dist;
+    std::vector<unsigned> dist(nodes.size(), 0);
 
     visited.insert(start_uid);
     queue.push(start_uid);
@@ -181,7 +173,7 @@ unsigned model::diameter_bfs(uid start_uid) const
         }
     }
 
-    return std::max_element(dist.begin(), dist.end(), map_val_comp<std::map<uid, unsigned>::value_type >())->second;
+    return *std::max_element(dist.begin(), dist.end());
 }    
 
 void model::export_to_pdf(int s, const char *filename) const
@@ -243,7 +235,7 @@ void model::load(const char *filename)
 
 bool model::choose_component(unsigned desired_size)
 {
-    std::map<uid, std::vector<uid> > all_components;
+    std::vector< std::vector<uid> > all_components(nodes.size());
 
     if (nodes.size() < desired_size)
         return false;
@@ -253,12 +245,11 @@ bool model::choose_component(unsigned desired_size)
         all_components[component_find(u)].push_back(u);
     }
 
-    for (std::map<uid, std::vector<uid> >::iterator it = all_components.begin();
-            it != all_components.end(); it++)
+    for (uid u = 0; u < nodes.size(); u++)
     {
-        if (it->second.size() >= desired_size)
+        if (all_components[u].size() >= desired_size)
         {
-           extract_nodes(it->second);
+           extract_nodes(all_components[u]);
            return true;
         }
     }

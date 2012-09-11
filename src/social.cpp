@@ -110,7 +110,7 @@ void social_model::generate(unsigned n, double size, double e,
 
         i = tiles - 1 - y / e;
         j = x / e;
-        uid_to_tile[current_uid] = i * tiles + j;        
+        uid_to_tile.push_back(i * tiles + j);        
 
         update_weights(current_uid);
 

@@ -2,7 +2,6 @@
 #define SINR_MODEL_H
 
 #include <cmath>
-#include <map>
 #include <vector>
 #include <cairo.h>
 #include <cairo-pdf.h>
@@ -58,7 +57,7 @@ class model
     }
 
     void eval(const std::vector<uid> &senders,
-            std::map<uid, std::vector<uid> > &result) const;
+            std::vector< std::vector<uid> > &result) const;
     unsigned diameter() const;
     unsigned diameter_bfs(uid start_uid) const;
     void export_to_pdf(int s, const char *filename) const;

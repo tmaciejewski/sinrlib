@@ -16,7 +16,8 @@ void density_unknown_algorithm::init(const sinr::model *m)
 
     for (sinr::uid u = 0; u < m->get_nodes().size(); u++)
     {
-        states[u] = state(m->get_nodes()[u].x, m->get_nodes()[u].y, gamma);
+        states.push_back(state(m->get_nodes()[u].x,
+                    m->get_nodes()[u].y, gamma));
     }
 
     states[m->get_source()].leader = m->get_source();

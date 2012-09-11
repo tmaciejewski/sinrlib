@@ -27,7 +27,7 @@ class density_unknown_algorithm : public sinr::algorithm
 
     std::set<sinr::uid> active;
     const sinr::model *model;
-    std::map<sinr::uid, state> states;
+    std::vector<state> states;
     double e, C, logn;
     int d, dprim, phase_round;
     double gamma;

@@ -11,7 +11,7 @@ namespace sinr {
 class social_model : public model
 {
     std::vector<std::set<uid> > sec_links;
-    std::map<uid, int> uid_to_tile;
+    std::vector<int> uid_to_tile;
 
     public:
 
