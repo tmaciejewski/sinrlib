@@ -6,3 +6,6 @@
 sinr
 show_model
 *.out
+*.in
+*~
+bin
