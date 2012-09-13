@@ -12,7 +12,7 @@ class density_unknown_algorithm : public sinr::algorithm
         bool has_leader, has_helper;
         sinr::uid leader, helper;
         int box_x, box_y;
-        int phase, phase_round[3];
+        int phase, phase_round[2], ppb;
         bool conflict, candidated, helped;
         std::set<sinr::uid> known_leaders;
 
@@ -20,22 +20,22 @@ class density_unknown_algorithm : public sinr::algorithm
         state(double x, double y, double gamma)
             : has_leader(false), has_helper(false),
             box_x(x / gamma), box_y(y / gamma),
-            phase(0), conflict(false),
+            phase(0), ppb(1), conflict(false),
             candidated(false), helped(false)
-        { phase_round[0] = 0; phase_round[1] = 0; phase_round[2] = 0; }
+        { phase_round[0] = 0; phase_round[1] = 0; }
     };
 
     std::set<sinr::uid> active;
     const sinr::model *model;
     std::vector<state> states;
-    double e, C, logn;
-    int d, dprim, phase_round;
+    double e;
+    int d, dprim, logn, phase_round;
     double gamma;
 
     public:
 
     density_unknown_algorithm(double e_, int C_, int d_, int dprim_)
-        : e(e_), C(C_), d(d_), dprim(dprim_) {}
+        : e(e_), d(d_), dprim(dprim_) {}
     void init(const sinr::model *m);
     bool on_round_end(sinr::uid u, const std::vector<sinr::uid> &messages,
             unsigned round_number);

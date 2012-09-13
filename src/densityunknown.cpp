@@ -53,7 +53,6 @@ bool density_unknown_algorithm::on_round_end(sinr::uid u,
         st.phase = 2;
         st.phase_round[0] = 0;
         st.phase_round[1] = 0;
-        st.phase_round[2] = 0;
         st.conflict = false;
         
         if (!st.has_leader)
@@ -88,15 +87,9 @@ bool density_unknown_algorithm::on_round_end(sinr::uid u,
             res = false;
         }
 
-        st.phase_round[2]++;
+        st.phase_round[1]++;
 
-        if (st.phase_round[2] > 2)
-        {
-            st.phase_round[2] = 0;
-            st.phase_round[1]++;
-        }
-
-        if (st.phase_round[1] > logn)
+        if (st.phase_round[1] > 3)
         {
             st.phase_round[1] = 0;
             st.phase_round[0]++;
@@ -121,7 +114,15 @@ bool density_unknown_algorithm::leaders_transmits(sinr::uid u, const std::vector
     a = st.phase_round[0] / d;
     b = st.phase_round[0] % d;
 
-    return (st.box_x % d == a && st.box_y % d == b);
+    if (st.box_x % d == a && st.box_y % d == b)
+    {
+        //std::cout << "leader " << u << " transmits in round: " << round_number << "\n";
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 bool density_unknown_algorithm::nonleaders_listen(sinr::uid u, const std::vector<sinr::uid> &messages,
@@ -163,13 +164,21 @@ bool density_unknown_algorithm::leader_election(sinr::uid u, const std::vector<s
 
     if (st.box_x % d == a && st.box_y % d == b)
     {
-        if (st.phase_round[2] == 0)
+        if (st.phase_round[1] == 0)
         {
-            double p = 1.0 / model->get_nodes().size()
-                * std::pow(2, st.phase_round[1]);
+            double p = static_cast<double>(dprim * dprim) / model->get_nodes().size();
+            //double p = static_cast<double>(st.ppb) / model->get_nodes().size();
+            st.ppb *= 2;
+            if (p > 1)
+            {
+                //std::cout << "!!zeruje\n";
+                st.ppb = 1;
+            }
             // transmit with ppb
             if (static_cast<double>(std::rand()) / RAND_MAX < p)
             {
+                //std::cout << u << " candidates for a leader in box: "
+                //    << st.box_x << " " << st.box_y << '\n';
                 st.candidated = true;
                 res = true;
             }
@@ -178,11 +187,11 @@ bool density_unknown_algorithm::leader_election(sinr::uid u, const std::vector<s
                 res = false;
             }
         }
-        else if (st.phase_round[2] == 1)
+        else if (st.phase_round[1] == 1)
         {
             res = false;
         }
-        else if (st.phase_round[2] == 2)
+        else if (st.phase_round[1] == 2)
         {
             // heard u? if if transmitted, I'm the leader
             // transmitting if leader
@@ -191,12 +200,14 @@ bool density_unknown_algorithm::leader_election(sinr::uid u, const std::vector<s
                 if (st.has_helper && std::find(messages.begin(),
                             messages.end(), st.helper) != messages.end())
                 {
+                    //std::cout << u << " won!\n";
                     st.leader = u;
                     st.has_leader = true;
                     res = true;
                 }
                 else
                 {
+                    //std::cout << u << " lost!\n";
                     st.conflict = true;
                     res = false;
                 }
@@ -206,7 +217,7 @@ bool density_unknown_algorithm::leader_election(sinr::uid u, const std::vector<s
                 res = false;
             }
         }
-        else if (st.phase_round[2] == 3)
+        else if (st.phase_round[1] == 3)
         {
             // other nodes receives the leader's and U's message
             if (st.has_helper && std::find(messages.begin(),
@@ -244,12 +255,12 @@ bool density_unknown_algorithm::election_helper(sinr::uid u, const std::vector<s
     state &st = states[u];
     bool res = false;
 
-    if (st.phase_round[2] == 0)
+    if (st.phase_round[1] == 0)
     {
         // wait for leader candidate
         res = false;
     }
-    else if (st.phase_round[2] == 1)
+    else if (st.phase_round[1] == 1)
     {
         // respond to the leader candidate
         st.helped = false;
@@ -266,7 +277,7 @@ bool density_unknown_algorithm::election_helper(sinr::uid u, const std::vector<s
             }
         }
     }
-    else if (st.phase_round[2] == 2)
+    else if (st.phase_round[1] == 2)
     {
         // transmit with the leader
         if (st.helped)
@@ -278,7 +289,7 @@ bool density_unknown_algorithm::election_helper(sinr::uid u, const std::vector<s
             res = false;
         }
     }
-    else if (st.phase_round[2] == 3)
+    else if (st.phase_round[1] == 3)
     {
         // wait for other
         res = false;
@@ -325,6 +336,11 @@ void density_unknown_algorithm::choose_election_helper(sinr::uid u)
 
 bool density_unknown_algorithm::is_done() 
 {
-    //std::cout << "active: " << active.size() << std::endl;
+    static unsigned last_active = 0;
+    if (active.size() > last_active)
+    {
+        //std::cout << "active: " << active.size() << std::endl;
+        last_active = active.size();
+    }
     return active.size() == model->get_nodes().size();
 }

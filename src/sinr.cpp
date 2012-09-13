@@ -61,10 +61,10 @@ int main(int argc, char **argv)
     //std::srand(std::time(0));
     std::srand(0);
 
-    algs.push_back(new naive_algorithm());
+    //algs.push_back(new naive_algorithm());
     algs.push_back(new backoffack_algorithm());
     //algs.push_back(new backoff_algorithm());
-    algs.push_back(new density_known_algorithm(e, C, d));
+    //algs.push_back(new density_known_algorithm(e, C, d));
     algs.push_back(new density_unknown_algorithm(e, C, d, d));
 
     for (int N = N_start; N <= N_end; N += N_step)
@@ -72,6 +72,7 @@ int main(int argc, char **argv)
         for (int S = S_start; S <= S_end; S += S_step)
         {
             std::vector<std::vector<int> > results;
+            std::vector<int> diameters;
             results.resize(algs.size());
 
             for (int t = tries; t > 0; t--)
@@ -80,6 +81,9 @@ int main(int argc, char **argv)
 
                 sinr::uniform_model model(2.5, 1, 1 - e);
                 model.generate(N, S);
+
+                //diameters.push_back(model.diameter());
+                diameters.push_back(-1);
                 
                 while (alg_index < algs.size())
                 {
@@ -107,7 +111,8 @@ int main(int argc, char **argv)
             for (unsigned i = 0; i < results.size(); i++)
             {
                 std::cout << algs[i]->name() << '\t' << N << '\t' << S << '\t'
-                    << avg(results[i]) << '\t' << stdv(results[i]) << std::endl;
+                    << avg(results[i]) << '\t' << stdv(results[i]) << '\t'
+                    << avg(diameters) << std::endl;
             }
         }
     }
