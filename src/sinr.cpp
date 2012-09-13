@@ -82,8 +82,8 @@ int main(int argc, char **argv)
                 sinr::uniform_model model(2.5, 1, 1 - e);
                 model.generate(N, S);
 
-                //diameters.push_back(model.diameter());
-                diameters.push_back(-1);
+                diameters.push_back(model.diameter());
+                //diameters.push_back(-1);
                 
                 while (alg_index < algs.size())
                 {
