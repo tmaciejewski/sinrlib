@@ -29,8 +29,8 @@ int main(int argc, char **argv)
         return 1;
     }
         
-    //std::srand(std::time(0));
-    std::srand(0);
+    std::srand(std::time(0));
+    //std::srand(0);
 
     model_name = argv[1];
 
@@ -43,13 +43,13 @@ int main(int argc, char **argv)
     else if (model_name == "social")
     {
         sinr::social_model *tmp = new sinr::social_model(2.5, 1, 1 - e);
-        tmp->generate(N, s, e, 0.1);
+        tmp->generate(N, s, e, 0.2);
         m = tmp;
     } 
     else if (model_name == "gadget")
     {
         sinr::gadget_model *tmp = new sinr::gadget_model(2.5, 1, 1 - e);
-        tmp->generate(s, N, e);
+        tmp->generate(s, N, e / 2);
         m = tmp;
     }
     else
@@ -60,13 +60,13 @@ int main(int argc, char **argv)
 
     for (sinr::uid u = 0; u < m->get_nodes().size(); u++)
     {
-        std::cout << "node " << u << ":";
+        //std::cout << "node " << u << ":";
         for (std::vector<sinr::uid>::const_iterator link_it = m->get_nodes()[u].links.begin();
                 link_it != m->get_nodes()[u].links.end(); link_it++)
         {
-            std::cout << " " << *link_it;
+            //std::cout << " " << *link_it;
         }
-        std::cout << '\n';
+        //std::cout << '\n';
     }
 
     show(*m, argv[2]);

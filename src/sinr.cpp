@@ -43,7 +43,7 @@ double stdv(const std::vector<int> results)
 int main(int argc, char **argv)
 {
     int tries, N_start = 200, N_end = 200, N_step = 1, S_start = 2, S_end = 2, S_step = 3;
-    int C = 1, d = 5;
+    int C = 1, d = 10;
     double e = .2;
     char sep;
     std::vector<sinr::algorithm*> algs;
@@ -83,7 +83,6 @@ int main(int argc, char **argv)
                 model.generate(N, S);
 
                 diameters.push_back(model.diameter());
-                //diameters.push_back(-1);
                 
                 while (alg_index < algs.size())
                 {

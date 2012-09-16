@@ -10,8 +10,8 @@ void gadget_model::generate(unsigned m, unsigned p, double eps)
 {
     uid current_uid = 0;
     double s = range / std::sqrt(2);
-    double source_x = 0;
-    double source_y = 0;
+    double source_x = 1;
+    double source_y = 1;
 
     reset();
 
