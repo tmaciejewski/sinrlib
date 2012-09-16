@@ -49,7 +49,7 @@ int main(int argc, char **argv)
     else if (model_name == "gadget")
     {
         sinr::gadget_model *tmp = new sinr::gadget_model(2.5, 1, 1 - e);
-        tmp->generate(s, N);
+        tmp->generate(s, N, e);
         m = tmp;
     }
     else

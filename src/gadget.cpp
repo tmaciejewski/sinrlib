@@ -6,7 +6,7 @@
 
 namespace sinr {
 
-void gadget_model::generate(unsigned m, unsigned p)
+void gadget_model::generate(unsigned m, unsigned p, double eps)
 {
     uid current_uid = 0;
     double s = range / std::sqrt(2);
@@ -23,10 +23,10 @@ void gadget_model::generate(unsigned m, unsigned p)
         std::vector<uid> recent_nodes;
         for (unsigned i = 1; i < p; i++)
         {
-            double x, y, eps;
-            eps = (s / 5) * (static_cast<double>(std::rand()) / RAND_MAX);
+            double x, y, mod_y;
+            mod_y = -eps + eps * 2 * (static_cast<double>(std::rand()) / RAND_MAX);
             x = source_x + s * (static_cast<double>(std::rand()) / RAND_MAX);
-            y = source_y + s + eps;
+            y = source_y + s + mod_y;
 
             add_node(node(x, y));
             recent_nodes.push_back(current_uid);
