@@ -53,6 +53,7 @@ bool density_unknown_algorithm::on_round_end(sinr::uid u,
         st.phase = 2;
         st.phase_round[0] = 0;
         st.phase_round[1] = 0;
+        st.ppb = 1;
         st.conflict = false;
         
         if (!st.has_leader)
@@ -92,7 +93,15 @@ bool density_unknown_algorithm::on_round_end(sinr::uid u,
         if (st.phase_round[1] > 3)
         {
             st.phase_round[1] = 0;
+            st.conflict = false;
+            st.ppb *= 2;
             st.phase_round[0]++;
+        }
+
+        if (st.ppb > model->get_nodes().size())
+        {
+            //st.phase_round[0]++;
+            st.ppb = 1;
         }
 
         if (st.phase_round[0] >= dprim*dprim)
@@ -100,6 +109,7 @@ bool density_unknown_algorithm::on_round_end(sinr::uid u,
             st.phase = 0;
             st.phase_round[0] = 0;
         }
+
     }
 
     return res;
@@ -116,7 +126,8 @@ bool density_unknown_algorithm::leaders_transmits(sinr::uid u, const std::vector
 
     if (st.box_x % d == a && st.box_y % d == b)
     {
-        //std::cout << "leader " << u << " transmits in round: " << round_number << "\n";
+        //std::cout << "leader " << u << "\tin box (" << st.box_x << ", " << st.box_y
+        //    << ") transmits in round: " << round_number << "\n";
         return true;
     }
     else
@@ -166,19 +177,13 @@ bool density_unknown_algorithm::leader_election(sinr::uid u, const std::vector<s
     {
         if (st.phase_round[1] == 0)
         {
-            double p = static_cast<double>(dprim * dprim) / model->get_nodes().size();
-            //double p = static_cast<double>(st.ppb) / model->get_nodes().size();
-            st.ppb *= 2;
-            if (p > 1)
-            {
-                //std::cout << "!!zeruje\n";
-                st.ppb = 1;
-            }
+            //double p = static_cast<double>(dprim * dprim) / model->get_nodes().size();
+            double p = static_cast<double>(st.ppb) / model->get_nodes().size();
             // transmit with ppb
             if (static_cast<double>(std::rand()) / RAND_MAX < p)
             {
                 //std::cout << u << " candidates for a leader in box: "
-                //    << st.box_x << " " << st.box_y << '\n';
+                //    << st.box_x << " " << st.box_y << "\tppb was " << p << '\n';
                 st.candidated = true;
                 res = true;
             }
@@ -200,10 +205,19 @@ bool density_unknown_algorithm::leader_election(sinr::uid u, const std::vector<s
                 if (st.has_helper && std::find(messages.begin(),
                             messages.end(), st.helper) != messages.end())
                 {
-                    //std::cout << u << " won!\n";
-                    st.leader = u;
-                    st.has_leader = true;
-                    res = true;
+                    if (states[st.helper].selected_leader == u)
+                    {
+                        //std::cout << u << " won!\n";
+                        st.leader = u;
+                        st.has_leader = true;
+                        res = true;
+                    }
+                    else
+                    {
+                        //std::cout << u << " lost to " << states[st.helper].selected_leader << "!\n";
+                        st.conflict = true;
+                        res = false;
+                    }
                 }
                 else
                 {
@@ -273,6 +287,7 @@ bool density_unknown_algorithm::election_helper(sinr::uid u, const std::vector<s
             {
                 st.helped = true;
                 res = true;
+                st.selected_leader = *it;
                 break;
             }
         }

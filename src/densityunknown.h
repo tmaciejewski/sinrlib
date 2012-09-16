@@ -10,9 +10,10 @@ class density_unknown_algorithm : public sinr::algorithm
     struct state
     {
         bool has_leader, has_helper;
-        sinr::uid leader, helper;
+        sinr::uid leader, helper, selected_leader;
         int box_x, box_y;
-        int phase, phase_round[2], ppb;
+        int phase, phase_round[2];
+        unsigned ppb;
         bool conflict, candidated, helped;
         std::set<sinr::uid> known_leaders;
 
