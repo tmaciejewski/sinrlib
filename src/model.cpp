@@ -149,11 +149,11 @@ unsigned model::diameter() const
 
 unsigned model::diameter_bfs(uid start_uid) const
 {
-    std::set<uid> visited;
+    std::vector<bool> visited(nodes.size(), false);
     std::queue<uid> queue;
     std::vector<unsigned> dist(nodes.size(), 0);
 
-    visited.insert(start_uid);
+    visited[start_uid] = true;
     queue.push(start_uid);
     dist[start_uid] = 0;
 
@@ -164,10 +164,10 @@ unsigned model::diameter_bfs(uid start_uid) const
         for (std::vector<uid>::const_iterator u2 = nodes[u].links.begin();
                 u2 != nodes[u].links.end(); u2++)
         {
-            if (visited.find(*u2) == visited.end())
+            if (visited[*u2] == false)
             {
                 dist[*u2] = dist[u] + 1;
-                visited.insert(*u2);
+                visited[*u2] = true;
                 queue.push(*u2);
             }
         }
