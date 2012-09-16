@@ -6,14 +6,14 @@
 
 #include "sinrlib.h"
 
-int N = 50, s = 1;
+int N = 50, s = 5;
 double e = .2;
 
 void show(const sinr::model &model, const char *filename)
 {
     std::cout << "generated" << std::endl;
     std::cout << "diameter: " << model.diameter() << std::endl;
-    model.export_to_pdf(s, filename);
+    model.export_to_pdf(filename);
     std::cout << "exported" << std::endl;
     //model.save("model.dat");
 }

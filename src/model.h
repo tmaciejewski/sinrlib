@@ -60,7 +60,7 @@ class model
             std::vector< std::vector<uid> > &result) const;
     unsigned diameter() const;
     unsigned diameter_bfs(uid start_uid) const;
-    void export_to_pdf(int s, const char *filename) const;
+    void export_to_pdf(const char *filename) const;
     void save(const char *filename) const;
     void load(const char *filename);
 

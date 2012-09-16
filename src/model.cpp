@@ -176,9 +176,21 @@ unsigned model::diameter_bfs(uid start_uid) const
     return *std::max_element(dist.begin(), dist.end());
 }    
 
-void model::export_to_pdf(int s, const char *filename) const
+void model::export_to_pdf(const char *filename) const
 {
     int scale = 50;
+    double max_x, max_y, min_x, min_y;
+    max_x = max_y = min_x = min_y = 0.0;
+
+    for (uid u = 0; u < nodes.size(); u++)
+    {
+        max_x = std::max(max_x, nodes[u].x);
+        max_y = std::max(max_y, nodes[u].y);
+        min_x = std::min(min_x, nodes[u].x);
+        min_y = std::min(min_y, nodes[u].y);
+    }
+
+    int s = std::max(std::abs(max_x - min_x), std::abs(max_y - min_y)) + 1.0;
 
     cairo_surface_t *surface;
     cairo_t *cr;
