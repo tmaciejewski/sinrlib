@@ -109,9 +109,12 @@ int main(int argc, char **argv)
 
             for (unsigned i = 0; i < results.size(); i++)
             {
+                double avg_res = avg(results[i]);
+                double res_std = stdv(results[i]);
+                double avg_diam = avg(diameters); 
                 std::cout << algs[i]->name() << '\t' << N << '\t' << S << '\t'
-                    << avg(results[i]) << '\t' << stdv(results[i]) << '\t'
-                    << avg(diameters) << std::endl;
+                    << avg_res << '\t' << res_std << '\t'
+                    << avg_diam << '\t' << avg_res / avg_diam << std::endl;
             }
         }
     }
