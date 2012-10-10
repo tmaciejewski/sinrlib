@@ -14,6 +14,7 @@ class backoffack_algorithm : public sinr::algorithm
         int counter;
         unsigned counter_max, density;
         std::set<sinr::uid> ack_from;
+        sinr::uid waken_by;
         state() : broadcasting(false), waiting_for_ack(false),
         counter(1), counter_max(1), density(1) {}
     };

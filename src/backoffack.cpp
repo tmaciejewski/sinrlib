@@ -62,8 +62,11 @@ bool backoffack_algorithm::waiting_for_ack(sinr::uid u, const std::vector<sinr::
     for (std::vector<sinr::uid>::const_iterator it = messages.begin();
             it != messages.end(); it++)
     {
-        if (states[u].ack_from.find(*it) == states[u].ack_from.end())
-            acks.push_back(*it);
+        if (states[*it].waken_by == u) // ack for me
+        {
+            if (states[u].ack_from.find(*it) == states[u].ack_from.end())
+                acks.push_back(*it);
+        }
     }
 
     if (acks.size() > 0)
@@ -107,6 +110,7 @@ bool backoffack_algorithm::send_ack(sinr::uid u, const std::vector<sinr::uid> &m
         // wakes up
         sinr::uid sender = senders.front();
         active.insert(u);
+        states[u].waken_by = sender;
         states[u].counter_max = states[sender].counter_max;
         states[u].counter = 1 + std::rand() % states[u].counter_max;
     }
