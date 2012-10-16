@@ -8,6 +8,7 @@
 
 #include "sinrlib.h"
 #include "naive.h"
+#include "antibackoff.h"
 #include "backoff.h"
 #include "backoffack.h"
 #include "densityknown.h"
@@ -43,8 +44,8 @@ double stdv(const std::vector<int> results)
 int main(int argc, char **argv)
 {
     int tries, N_start = 200, N_end = 200, N_step = 1, S_start = 2, S_end = 2, S_step = 3;
-    int C = 1, d = 5;
-    double e = .2;
+    int d = 5;
+    double C = 2, e = .2;
     char sep;
     std::vector<sinr::algorithm*> algs;
 
@@ -62,10 +63,11 @@ int main(int argc, char **argv)
     std::srand(0);
 
     //algs.push_back(new naive_algorithm());
-    algs.push_back(new backoffack_algorithm());
+    //algs.push_back(new backoffack_algorithm());
     //algs.push_back(new backoff_algorithm());
+    algs.push_back(new antibackoff_algorithm(e));
     //algs.push_back(new density_known_algorithm(e, C, d));
-    algs.push_back(new density_unknown_algorithm(e, C, d, d));
+    //algs.push_back(new density_unknown_algorithm(e, C, d, d));
 
     for (int N = N_start; N <= N_end; N += N_step)
     {
@@ -85,8 +87,10 @@ int main(int argc, char **argv)
                 sinr::social_model model(2.5, 1, 1 - e);
                 model.generate(N, S, e, 0.2);
 
-                //sinr::gadget_model(2.5, 1, 1 - e);
-                //model.generate(N, S);
+                //sinr::gadget_model model(2.5, 1, 1 - e);
+                //model.generate(N, S, e / 2);
+
+                model.export_to_pdf("sinr.pdf");
 
                 diameters.push_back(model.diameter());
                 
