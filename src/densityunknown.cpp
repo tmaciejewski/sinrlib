@@ -11,7 +11,7 @@ void density_unknown_algorithm::init(const sinr::model *m)
     active.clear();
     states.clear();
     active.insert(m->get_source());
-    gamma = e / (2 * std::sqrt(2));
+    gamma = e / (6 * std::sqrt(2));
     logn = std::log(m->get_nodes().size()) / std::log(2);
 
     for (sinr::uid u = 0; u < m->get_nodes().size(); u++)
