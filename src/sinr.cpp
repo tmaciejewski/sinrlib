@@ -43,7 +43,7 @@ double stdv(const std::vector<int> results)
 int main(int argc, char **argv)
 {
     int tries, N_start = 200, N_end = 200, N_step = 1, S_start = 2, S_end = 2, S_step = 3;
-    int C = 1, d = 10;
+    int C = 1, d = 5;
     double e = .2;
     char sep;
     std::vector<sinr::algorithm*> algs;
@@ -79,8 +79,14 @@ int main(int argc, char **argv)
             {
                 unsigned alg_index = 0;
 
-                sinr::uniform_model model(2.5, 1, 1 - e);
-                model.generate(N, S);
+                //sinr::uniform_model model(2.5, 1, 1 - e);
+                //model.generate(N, S);
+
+                sinr::social_model model(2.5, 1, 1 - e);
+                model.generate(N, S, e, 0.2);
+
+                //sinr::gadget_model(2.5, 1, 1 - e);
+                //model.generate(N, S);
 
                 diameters.push_back(model.diameter());
                 
