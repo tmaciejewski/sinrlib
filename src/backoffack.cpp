@@ -9,6 +9,10 @@ void backoffack_algorithm::init(const sinr::model *m)
     active.clear();
     states.clear();
     active.insert(m->get_source());
+    for (sinr::uid u = 0; u < m->get_nodes().size(); u++)
+    {
+        states.push_back(state());
+    }
     states[m->get_source()].broadcasting = true;
     // TODO: density
 }

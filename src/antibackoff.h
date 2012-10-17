@@ -1,7 +1,6 @@
 #ifndef ANTIBACKOFF_H
 #define ANTIBACKOFF_H
 
-#include <map>
 #include <set>
 
 #include "sinrlib.h"

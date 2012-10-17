@@ -1,7 +1,6 @@
 #ifndef BACKOFFACK_H
 #define BACKOFFACK_H
 
-#include <map>
 #include <set>
 
 #include "sinrlib.h"
@@ -22,7 +21,7 @@ class backoffack_algorithm : public sinr::algorithm
     std::set<sinr::uid> active;
     const sinr::model *model;
 
-    std::map<sinr::uid, state> states; 
+    std::vector<state> states; 
 
     public:
 
