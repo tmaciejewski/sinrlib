@@ -63,7 +63,7 @@ int main(int argc, char **argv)
     std::srand(0);
 
     //algs.push_back(new naive_algorithm());
-    //algs.push_back(new backoffack_algorithm());
+    algs.push_back(new backoffack_algorithm());
     //algs.push_back(new backoff_algorithm());
     algs.push_back(new antibackoff_algorithm(e));
     //algs.push_back(new density_known_algorithm(e, C, d));
@@ -81,11 +81,11 @@ int main(int argc, char **argv)
             {
                 unsigned alg_index = 0;
 
-                //sinr::uniform_model model(2.5, 1, 1 - e);
-                //model.generate(N, S);
+                sinr::uniform_model model(2.5, 1, 1 - e);
+                model.generate(N, S);
 
-                sinr::social_model model(2.5, 1, 1 - e);
-                model.generate(N, S, e, 0.2);
+                //sinr::social_model model(2.5, 1, 1 - e);
+                //model.generate(N, S, e, 0.2);
 
                 //sinr::gadget_model model(2.5, 1, 1 - e);
                 //model.generate(N, S, e / 2);
