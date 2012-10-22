@@ -12,7 +12,7 @@ class density_unknown_algorithm : public sinr::algorithm
         bool has_leader, has_helper;
         sinr::uid leader, helper, selected_leader;
         int box_x, box_y;
-        int phase, phase_round[2];
+        int phase, octant, phase_round[2];
         unsigned ppb;
         bool conflict, candidated, helped;
         std::set<sinr::uid> known_leaders;
@@ -21,7 +21,7 @@ class density_unknown_algorithm : public sinr::algorithm
         state(double x, double y, double gamma)
             : has_leader(false), has_helper(false),
             box_x(x / gamma), box_y(y / gamma),
-            phase(0), ppb(1), conflict(false),
+            phase(0), octant(0), ppb(1), conflict(false),
             candidated(false), helped(false)
         { phase_round[0] = 0; phase_round[1] = 0; }
     };
@@ -54,6 +54,7 @@ class density_unknown_algorithm : public sinr::algorithm
     bool election_helper(sinr::uid u, const std::vector<sinr::uid> &messages,
             unsigned round_number);
     void choose_election_helper(sinr::uid u);
+    int which_octant(sinr::uid u, sinr::uid v);
 };
 
 #endif // SINR_DENSITYUNKNOWN_H

@@ -55,7 +55,8 @@ bool density_unknown_algorithm::on_round_end(sinr::uid u,
         st.phase_round[1] = 0;
         st.ppb = 1;
         st.conflict = false;
-        
+        st.octant = 0;
+
         if (!st.has_leader)
         {
             // no leader in a box
@@ -93,15 +94,27 @@ bool density_unknown_algorithm::on_round_end(sinr::uid u,
         if (st.phase_round[1] > 3)
         {
             st.phase_round[1] = 0;
-            st.conflict = false;
             st.ppb *= 2;
-            st.phase_round[0]++;
+            st.conflict = false;
+            //st.phase_round[0]++;
         }
 
         if (st.ppb > model->get_nodes().size())
         {
             //st.phase_round[0]++;
+            st.octant++;
+            if (!st.has_leader)
+            {
+                // no leader in a box
+                choose_election_helper(u);
+            }
             st.ppb = 1;
+        }
+
+        if (st.octant >= 8)
+        {
+            st.octant = 0;
+            st.phase_round[0]++;
         }
 
         if (st.phase_round[0] >= dprim*dprim)
@@ -182,13 +195,15 @@ bool density_unknown_algorithm::leader_election(sinr::uid u, const std::vector<s
             // transmit with ppb
             if (static_cast<double>(std::rand()) / RAND_MAX < p)
             {
-                //std::cout << u << " candidates for a leader in box: "
+                //std::cout << u << " candidates (helper: " << st.helper << ") for a leader in box: "
                 //    << st.box_x << " " << st.box_y << "\tppb was " << p << '\n';
                 st.candidated = true;
                 res = true;
             }
             else
             {
+                //std::cout << u << " doesn't candidate (helper: " << st.helper << ") for a leader in box: "
+                //    << st.box_x << " " << st.box_y << "\tppb was " << p << '\n';
                 res = false;
             }
         }
@@ -247,6 +262,7 @@ bool density_unknown_algorithm::leader_election(sinr::uid u, const std::vector<s
                     if (states[*it].box_x == st.box_x && states[*it].box_y == st.box_y)
                     {
                         // discovered a leader
+                        //std::cout << u << " discovers new leader " << *it << '\n';
                         st.leader = *it;
                         st.has_leader = true;
                     }
@@ -322,19 +338,22 @@ void density_unknown_algorithm::choose_election_helper(sinr::uid u)
     for (std::set<sinr::uid>::iterator leader_it = st.known_leaders.begin();
             leader_it != st.known_leaders.end(); leader_it++)
     {
-        int lbox_x, lbox_y;
-        double dist;
-
-        lbox_x = states[*leader_it].box_x;
-        lbox_y = states[*leader_it].box_y;
-
-        dist = std::sqrt((st.box_x - lbox_x)*(st.box_x - lbox_x)
-                + (st.box_y - lbox_y)*(st.box_y - lbox_y));
-
-        if (helper_dist < 0 || dist < helper_dist)
+        if (which_octant(u, *leader_it) == st.octant)
         {
-            helper = *leader_it;
-            helper_dist = dist;
+            int lbox_x, lbox_y;
+            double dist;
+
+            lbox_x = states[*leader_it].box_x;
+            lbox_y = states[*leader_it].box_y;
+
+            dist = std::sqrt((st.box_x - lbox_x)*(st.box_x - lbox_x)
+                    + (st.box_y - lbox_y)*(st.box_y - lbox_y));
+
+            if (helper_dist < 0 || dist < helper_dist)
+            {
+                helper = *leader_it;
+                helper_dist = dist;
+            }
         }
     }
 
@@ -347,6 +366,20 @@ void density_unknown_algorithm::choose_election_helper(sinr::uid u)
     {
         st.has_helper = false;
     }
+}
+
+int density_unknown_algorithm::which_octant(sinr::uid u, sinr::uid v)
+{
+    // tg angle = |x_u - x_v| / |y_u - y_v|
+    
+    double x_u = model->get_nodes()[u].x;
+    double y_u = model->get_nodes()[u].y;
+    double x_v = model->get_nodes()[v].x;
+    double y_v = model->get_nodes()[v].y;
+    double angle = M_PI / 2 + std::atan(std::abs(x_u - x_v) / std::abs(y_u - y_v));
+    int octant = 8 * (angle / (M_PI * 2));
+
+    return octant;
 }
 
 bool density_unknown_algorithm::is_done() 
