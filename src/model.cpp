@@ -259,8 +259,6 @@ void model::load(const char *filename)
     file.read((char *)&beta, sizeof(beta));
     file.read((char *)&range, sizeof(range));
     file.read((char *)&source, sizeof(source));
-    std::cout << "loaded: " << alpha << " " << beta
-        << " " << range << " " << source << "\n";
     while (file)
     {
         double x, y;
@@ -268,7 +266,6 @@ void model::load(const char *filename)
         file.read((char *)&y, sizeof(y));
         add_node(node(x, y));
     }
-    std::cout << nodes.size() << " nodes\n";
 }
 
 bool model::choose_component(unsigned desired_size)
