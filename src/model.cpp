@@ -238,11 +238,37 @@ void model::plot(cairo_t *cr, int s, int scale) const
 void model::save(const char *filename) const
 {
     std::ofstream file(filename);
+    file.write((char *)&alpha, sizeof(alpha));
+    file.write((char *)&beta, sizeof(beta));
+    file.write((char *)&range, sizeof(range));
+    file.write((char *)&source, sizeof(source));
+    for (uid u = 0; u < nodes.size(); u++)
+    {
+        file.write((char *)&nodes[u].x, sizeof(nodes[u].x));
+        file.write((char *)&nodes[u].y, sizeof(nodes[u].y));
+    }
 }
 
 void model::load(const char *filename)
 {
     std::ifstream file(filename);
+    
+    nodes.clear();
+
+    file.read((char *)&alpha, sizeof(alpha));
+    file.read((char *)&beta, sizeof(beta));
+    file.read((char *)&range, sizeof(range));
+    file.read((char *)&source, sizeof(source));
+    std::cout << "loaded: " << alpha << " " << beta
+        << " " << range << " " << source << "\n";
+    while (file)
+    {
+        double x, y;
+        file.read((char *)&x, sizeof(x));
+        file.read((char *)&y, sizeof(y));
+        add_node(node(x, y));
+    }
+    std::cout << nodes.size() << " nodes\n";
 }
 
 bool model::choose_component(unsigned desired_size)

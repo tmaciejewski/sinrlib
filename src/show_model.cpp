@@ -6,9 +6,6 @@
 
 #include "sinrlib.h"
 
-int N = 50, s = 5;
-double e = .2;
-
 void show(const sinr::model &model, const char *filename)
 {
     std::cout << "generated" << std::endl;
@@ -20,56 +17,29 @@ void show(const sinr::model &model, const char *filename)
 
 int main(int argc, char **argv)
 {
-    std::string model_name;
-    sinr::model *m;    
+    double e = 0.2;
+    sinr::model m(2.5, 1, 1 - e);    
 
-    if (argc < 3)
+    if (argc < 2)
     {
-        std::cout << "Usage: show_model name file\n";
+        std::cout << "Usage: " << argv[0] << " input output\n";
         return 1;
     }
+
+    m.load(argv[1]);
         
-    std::srand(std::time(0));
-    //std::srand(0);
-
-    model_name = argv[1];
-
-    if (model_name == "uniform")
-    {
-        sinr::uniform_model *tmp = new sinr::uniform_model(2.5, 1, 1 - e);
-        tmp->generate(N, s);
-        m = tmp;
-    }
-    else if (model_name == "social")
-    {
-        sinr::social_model *tmp = new sinr::social_model(2.5, 1, 1 - e);
-        tmp->generate(N, s, e, 0.2);
-        m = tmp;
-    } 
-    else if (model_name == "gadget")
-    {
-        sinr::gadget_model *tmp = new sinr::gadget_model(2.5, 1, 1 - e);
-        tmp->generate(s, N, e / 2);
-        m = tmp;
-    }
-    else
-    {
-        std::cout << "unknown model name\n";
-        return 2;
-    }
-
-    for (sinr::uid u = 0; u < m->get_nodes().size(); u++)
+    for (sinr::uid u = 0; u < m.get_nodes().size(); u++)
     {
         //std::cout << "node " << u << ":";
-        for (std::vector<sinr::uid>::const_iterator link_it = m->get_nodes()[u].links.begin();
-                link_it != m->get_nodes()[u].links.end(); link_it++)
+        for (std::vector<sinr::uid>::const_iterator link_it = m.get_nodes()[u].links.begin();
+                link_it != m.get_nodes()[u].links.end(); link_it++)
         {
             //std::cout << " " << *link_it;
         }
         //std::cout << '\n';
     }
 
-    show(*m, argv[2]);
+    show(m, argv[2]);
 
     return 0;
 }
