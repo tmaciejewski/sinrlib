@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <iostream>
 #include <fstream>
+#include <stdexcept>
 
 namespace sinr {
 
@@ -253,6 +254,13 @@ void model::load(const char *filename)
 {
     std::ifstream file(filename);
     
+    if (!file)
+    {
+        std::string msg = "cannot load model: ";
+        msg += filename;
+        throw std::runtime_error(msg);
+    }
+
     nodes.clear();
 
     file.read((char *)&alpha, sizeof(alpha));

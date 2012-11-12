@@ -44,30 +44,30 @@ double stdv(const std::vector<int> results)
 int main(int argc, char **argv)
 {
     int tries, N_start = 200, N_end = 200, N_step = 1, S_start = 2, S_end = 2, S_step = 3;
-    int d = 5;
+    int d = 10, dprim = 10;
     double C = 2, e = .2;
     char sep;
     std::vector<sinr::algorithm*> algs;
 
-    if (argc < 3)
+    if (argc < 5)
     {
-        std::cout << "Usage: sinr tries N_start,N_end,N_step S_start,S_end,S_step\n";
+        std::cout << "Usage: sinr dir tries N_start,N_end,N_step S_start,S_end,S_step\n";
         return 1;
     }
 
-    std::istringstream(argv[1]) >> tries;
-    std::istringstream(argv[2]) >> N_start >> sep >> N_end >> sep >> N_step;
-    std::istringstream(argv[3]) >> S_start >> sep >> S_end >> sep >> S_step;
+    std::istringstream(argv[2]) >> tries;
+    std::istringstream(argv[3]) >> N_start >> sep >> N_end >> sep >> N_step;
+    std::istringstream(argv[4]) >> S_start >> sep >> S_end >> sep >> S_step;
 
-    //std::srand(std::time(0));
-    std::srand(0);
+    std::srand(std::time(0));
+    //std::srand(0);
 
     //algs.push_back(new naive_algorithm());
     algs.push_back(new backoffack_algorithm());
     //algs.push_back(new backoff_algorithm());
-    algs.push_back(new antibackoff_algorithm(e));
-    //algs.push_back(new density_known_algorithm(e, C, d));
-    //algs.push_back(new density_unknown_algorithm(e, C, d, d));
+    //algs.push_back(new antibackoff_algorithm(e));
+    algs.push_back(new density_known_algorithm(e, C, d));
+    //algs.push_back(new density_unknown_algorithm(e, C, d, dprim));
 
     for (int N = N_start; N <= N_end; N += N_step)
     {
@@ -80,17 +80,11 @@ int main(int argc, char **argv)
             for (int t = tries; t > 0; t--)
             {
                 unsigned alg_index = 0;
+                sinr::model model;
+                std::ostringstream model_file;
 
-                //sinr::uniform_model model;
-                //model.generate(N, S);
-
-                sinr::social_model model;
-                model.generate(N, S, e, 0.2);
-
-                //sinr::gadget_model model;
-                //model.generate(N, S, e / 2);
-
-                model.export_to_pdf("sinr.pdf");
+                model_file << argv[1] << "/" << N << "/" << S << "/" << t;
+                model.load(model_file.str().c_str());
 
                 diameters.push_back(model.diameter());
                 
