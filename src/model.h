@@ -8,6 +8,10 @@
 
 namespace sinr {
 
+const double default_alpha = 2.5;
+const double default_beta  = 1.0;
+const double default_epsilon = 0.2;
+
 typedef unsigned uid;
 
 struct node
@@ -40,6 +44,11 @@ class model
     uid source;
 
     public:
+
+    model() : alpha(default_alpha), beta(default_beta),
+              range(1 - default_epsilon)
+    {
+    }
 
     model(double a, double b, double r)
         : alpha(a), beta(b), range(r)

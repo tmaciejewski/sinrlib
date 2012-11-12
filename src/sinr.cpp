@@ -81,13 +81,13 @@ int main(int argc, char **argv)
             {
                 unsigned alg_index = 0;
 
-                sinr::uniform_model model(2.5, 1, 1 - e);
-                model.generate(N, S);
+                //sinr::uniform_model model;
+                //model.generate(N, S);
 
-                //sinr::social_model model(2.5, 1, 1 - e);
-                //model.generate(N, S, e, 0.2);
+                sinr::social_model model;
+                model.generate(N, S, e, 0.2);
 
-                //sinr::gadget_model model(2.5, 1, 1 - e);
+                //sinr::gadget_model model;
                 //model.generate(N, S, e / 2);
 
                 model.export_to_pdf("sinr.pdf");

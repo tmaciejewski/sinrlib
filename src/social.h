@@ -15,8 +15,6 @@ class social_model : public model
 
     public:
 
-    social_model(double a, double b, double r)
-        : model(a, b, r) {}
     void generate(unsigned n, double size, double e,
             double gamma);
 
