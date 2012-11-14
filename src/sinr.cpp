@@ -45,7 +45,7 @@ int main(int argc, char **argv)
 {
     int tries, N_start = 200, N_end = 200, N_step = 1, S_start = 2, S_end = 2, S_step = 3;
     int d = 10, dprim = 10;
-    double C = 2, e = .2;
+    double C = 1, e = .2;
     char sep;
     std::vector<sinr::algorithm*> algs;
 
@@ -77,7 +77,7 @@ int main(int argc, char **argv)
             std::vector<int> diameters;
             results.resize(algs.size());
 
-            for (int t = tries; t > 0; t--)
+            for (int t = 1; t <= tries; t++)
             {
                 unsigned alg_index = 0;
                 sinr::model model;
