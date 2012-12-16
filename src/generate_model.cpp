@@ -18,8 +18,10 @@ int main(int argc, char **argv)
         std::cout << "Usage: " << argv[0] << " name N s file\n";
         return 1;
     }
-        
-    std::srand(std::time(0));
+    
+    timespec time;
+    clock_gettime(CLOCK_REALTIME, &time);
+    std::srand(time.tv_nsec);
     //std::srand(0);
 
     model_name = argv[1];
