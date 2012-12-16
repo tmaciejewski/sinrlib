@@ -229,7 +229,10 @@ void model::plot(cairo_t *cr, int s, int scale) const
     for (uid u = 0; u < nodes.size(); u++)
     {
             cairo_arc(cr, scale * nodes[u].x, scale * (s - nodes[u].y), 2, 0, 2*M_PI);
-            cairo_set_source_rgb(cr, 1, 0, 0);
+            if (u == get_source())
+                cairo_set_source_rgb(cr, 1.0, 1.0, 0);
+            else
+                cairo_set_source_rgb(cr, 0.8, 0, 0);
             cairo_fill_preserve(cr);
             cairo_set_source_rgb(cr, 0, 0, 0);
             cairo_stroke(cr);
