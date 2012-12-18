@@ -55,31 +55,31 @@ the directory structure must be like this:
 network_dir/
    100/
       5/
-	1
-	2
-	.
-	.
-	.
-	10
+        1
+        2
+        .
+        .
+        .
+        10
    200/
       5/
-	1
-	2
-	.
-	.
-	.
-	10
+        1
+        2
+        .
+        .
+        .
+        10
    .
    .
    .
    500/
       5/
-	1
-	2
-	.
-	.
-	.
-	10
+        1
+        2
+        .
+        .
+        .
+        10
 ```
 
 In general, for t-th trial and p1, p2 being parameters 1 and 2, the tool uses path
